@@ -13,7 +13,7 @@ jobs:
       - name: Checkout private cards repo
         uses: actions/checkout@v4
         with:
-          repository: BeondRogue/beond_rogue_ebusiness_card_profiles
+          repository: BeondRogue/beond-rogue-ebusiness-card-profiles
           token: ${{ secrets.PAT }}
           path: cards-repo
 
