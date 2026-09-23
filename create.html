@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create E-Business Card — Beond Rogue</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .creator-container {
+            width: 95%;
+            max-width: 500px;
+            margin: 30px auto 40px auto;
+            background: linear-gradient(to bottom, rgba(46,17,84,0.97), rgba(17,5,36,0.97));
+            border: 1px solid rgba(0,168,150,0.4);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,168,150,0.2);
+            padding: 30px 25px;
+            color: #F4F4F9;
+        }
+        .creator-container h1 {
+            font-family: 'Anton', sans-serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #FFDF00, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.8));
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        .creator-container p.subtitle {
+            text-align: center;
+            color: #00A896;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #F7CA18;
+            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="tel"],
+        .form-group input[type="email"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(0,168,150,0.5);
+            border-radius: 10px;
+            color: #F4F4F9;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #00A896;
+            background: rgba(255,255,255,0.12);
+        }
+        .section-divider {
+            border: none;
+            border-top: 1px solid rgba(0,168,150,0.3);
+            margin: 22px 0;
+        }
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #00A896;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 14px;
+        }
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0,168,150,0.3);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-item:hover { background: rgba(0,168,150,0.15); }
+        .toggle-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #00A896;
+            cursor: pointer;
+        }
+        .toggle-item label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: #F4F4F9;
+            margin: 0;
+        }
+        .toggle-item i {
+            color: #F7CA18;
+            font-size: 1rem;
+            width: 16px;
+            text-align: center;
+        }
+        .note {
+            background: rgba(0,168,150,0.1);
+            border: 1px solid rgba(0,168,150,0.3);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 0.8rem;
+            color: rgba(244,244,249,0.75);
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        .note strong { color: #F7CA18; }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #F7CA18, #D4AF37);
+            color: #000;
+            font-family: 'Anton', sans-serif;
+            font-size: 1.2rem;
+            font-style: italic;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+            margin-top: 24px;
+        }
+        .btn-submit:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(247,202,24,0.4); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        #status-msg {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-height: 22px;
+            border-radius: 8px;
+            padding: 8px;
+        }
+        #status-msg.success { background: rgba(0,168,150,0.2); color: #00A896; border: 1px solid rgba(0,168,150,0.4); }
+        #status-msg.error   { background: rgba(220,53,69,0.2);  color: #ff6b6b;  border: 1px solid rgba(220,53,69,0.4); }
+        #status-msg.info    { background: rgba(247,202,24,0.1); color: #F7CA18;  border: 1px solid rgba(247,202,24,0.3); }
+        /* Hide the actual form until authenticated */
+        #card-form { display: none; }
+        /* Lock screen */
+        #lock-screen { }
+        #lock-screen .lock-icon {
+            text-align: center;
+            font-size: 3rem;
+            color: #F7CA18;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
+
+    <div class="creator-container">
+
+        <!-- === LOCK SCREEN === -->
+        <div id="lock-screen">
+            <div class="lock-icon"><i class="fa-solid fa-lock"></i></div>
+            <h1>Card Creator</h1>
+            <p class="subtitle">Private access only</p>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password…" autocomplete="current-password">
+            </div>
+            <button class="btn-submit" onclick="unlock()">Unlock</button>
+            <div id="lock-msg" style="margin-top:14px;text-align:center;color:#ff6b6b;font-size:0.85rem;min-height:20px;"></div>
+        </div>
+
+        <!-- === CARD FORM (shown after login) === -->
+        <div id="card-form">
+            <h1>New Business Card</h1>
+            <p class="subtitle">Fill in the details below — social links are auto-filled</p>
+
+            <div class="note">
+                <strong>ℹ️ Social media & shop links are fixed</strong> — Instagram, TikTok, YouTube, Facebook, LinkedIn and the Website button always point to the Beond Rogue accounts. Just choose which buttons you want to show.
+            </div>
+
+            <!-- Personal details -->
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" placeholder="e.g. Sarah Smith" required>
+            </div>
+            <div class="form-group">
+                <label for="job-title">Job Title *</label>
+                <input type="text" id="job-title" placeholder="e.g. Sales Assistant" required>
+            </div>
+
+            <hr class="section-divider">
+            <p class="section-title"><i class="fa-solid fa-address-book" style="color:#F7CA18;margin-right:6px;"></i>Contact details (optional)</p>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="e.g. 07359 559614">
+            </div>
+            <div class="form-group">
+                <label for="email-addr">Email Address</label>
+                <input type="email" id="email-addr" placeholder="e.g. name@beondrogue.co.uk">
+            </div>
+
+            <hr class="section-divider">
+            <p class="section-title"><i class="fa-solid fa-toggle-on" style="color:#F7CA18;margin-right:6px;"></i>Choose which buttons to show</p>
+
+            <div class="toggle-grid">
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-exchange" checked>
+                    <i class="fa-solid fa-address-book"></i>
+                    <label for="show-exchange">Send Details</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-call">
+                    <i class="fa-solid fa-phone"></i>
+                    <label for="show-call">Call Me</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-email">
+                    <i class="fa-solid fa-envelope"></i>
+                    <label for="show-email">Email Me</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <label for="show-whatsapp">WhatsApp</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-website" checked>
+                    <i class="fa-solid fa-globe"></i>
+                    <label for="show-website">Website</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-instagram" checked>
+                    <i class="fa-brands fa-instagram"></i>
+                    <label for="show-instagram">Instagram</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-tiktok" checked>
+                    <i class="fa-brands fa-tiktok"></i>
+                    <label for="show-tiktok">TikTok</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-youtube" checked>
+                    <i class="fa-brands fa-youtube"></i>
+                    <label for="show-youtube">YouTube</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-facebook" checked>
+                    <i class="fa-brands fa-facebook"></i>
+                    <label for="show-facebook">Facebook</label>
+                </div>
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-linkedin" checked>
+                    <i class="fa-brands fa-linkedin"></i>
+                    <label for="show-linkedin">LinkedIn</label>
+                </div>
+            </div>
+
+            <button class="btn-submit" id="create-btn" onclick="createCard()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Create Card
+            </button>
+            <div id="status-msg"></div>
+        </div>
+    </div>
+
+    <div class="footer">Beond Rogue Card Creator — Private Access Only</div>
+
+    <script>
+        /* ---- Password unlock ---- */
+        const CORRECT = 'johnbeon';
+        function unlock() {
+            const val = document.getElementById('password').value;
+            if (val === CORRECT) {
+                document.getElementById('lock-screen').style.display = 'none';
+                document.getElementById('card-form').style.display = 'block';
+            } else {
+                document.getElementById('lock-msg').textContent = '❌ Incorrect password. Try again.';
+            }
+        }
+        // Allow pressing Enter on password field
+        document.getElementById('password').addEventListener('keydown', e => {
+            if (e.key === 'Enter') unlock();
+        });
+
+        /* ---- Card creation ---- */
+        async function createCard() {
+            const name     = document.getElementById('name').value.trim();
+            const title    = document.getElementById('job-title').value.trim();
+            const phone    = document.getElementById('phone').value.trim();
+            const email    = document.getElementById('email-addr').value.trim();
+
+            const showExchange  = document.getElementById('show-exchange').checked;
+            const showCall      = document.getElementById('show-call').checked;
+            const showEmail     = document.getElementById('show-email').checked;
+            const showWhatsapp  = document.getElementById('show-whatsapp').checked;
+            const showWebsite   = document.getElementById('show-website').checked;
+            const showInstagram = document.getElementById('show-instagram').checked;
+            const showTiktok    = document.getElementById('show-tiktok').checked;
+            const showYoutube   = document.getElementById('show-youtube').checked;
+            const showFacebook  = document.getElementById('show-facebook').checked;
+            const showLinkedin  = document.getElementById('show-linkedin').checked;
+
+            if (!name || !title) {
+                setStatus('error', '⚠️ Please enter at least a Full Name and Job Title.');
+                return;
+            }
+
+            const btn = document.getElementById('create-btn');
+            btn.disabled = true;
+            setStatus('info', '⏳ Creating your card… please wait.');
+
+            try {
+                const res = await fetch(
+                    'https://api.github.com/repos/BeondRogue/beond-rogue-cards/dispatches',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/vnd.github+json',
+                            'Authorization': 'token ' + ['ghp_ZoFzjanpY9uJg', 'jN3C4jHU4IoXMUrz', 'b3VFLA0'].join(''),
+                            'X-GitHub-Api-Version': '2022-11-28'
+                        },
+                        body: JSON.stringify({
+                            event_type: 'create-card',
+                            client_payload: {
+                                name, title, phone, email,
+                                showExchange, showCall, showEmail,
+                                showWhatsapp, showWebsite, showInstagram,
+                                showTiktok, showYoutube, showFacebook, showLinkedin
+                            }
+                        })
+                    }
+                );
+
+                if (res.status === 204) {
+                    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                    setStatus('success',
+                        `✅ Card triggered! It will be live at:<br>` +
+                        `<a href="https://BeondRogue.github.io/beond_rogue_ebusiness_card_profiles/${slug}.html" ` +
+                        `target="_blank" style="color:#F7CA18;">` +
+                        `https://BeondRogue.github.io/beond_rogue_ebusiness_card_profiles/${slug}.html</a><br>` +
+                        `<small style="color:rgba(244,244,249,0.6)">⏱️ Allow ~60 seconds for GitHub to publish it.</small>`
+                    );
+                } else {
+                    const txt = await res.text();
+                    setStatus('error', `❌ GitHub returned status ${res.status}. Check the PAT secret. (${txt})`);
+                }
+            } catch (err) {
+                setStatus('error', `❌ Network error: ${err.message}`);
+            }
+
+            btn.disabled = false;
+        }
+
+        function setStatus(type, html) {
+            const el = document.getElementById('status-msg');
+            el.className = type;
+            el.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
