@@ -25,23 +25,29 @@ jobs:
 
       - name: Generate card HTML and update index
         env:
-          NAME:     ${{ github.event.client_payload.name }}
-          TITLE:    ${{ github.event.client_payload.title }}
-          PHONE:    ${{ github.event.client_payload.phone }}
-          EMAIL:    ${{ github.event.client_payload.email }}
-          BUTTONS:  ${{ github.event.client_payload.buttons }}
-          OLD_SLUG: ${{ github.event.client_payload.old_slug }}
+          NAME:      ${{ github.event.client_payload.name }}
+          TITLE:     ${{ github.event.client_payload.title }}
+          PHONE:     ${{ github.event.client_payload.phone }}
+          EMAIL:     ${{ github.event.client_payload.email }}
+          AVATAR:    ${{ github.event.client_payload.avatar }}
+          CTA_LABEL: ${{ github.event.client_payload.cta_label }}
+          CTA_URL:   ${{ github.event.client_payload.cta_url }}
+          BUTTONS:   ${{ github.event.client_payload.buttons }}
+          OLD_SLUG:  ${{ github.event.client_payload.old_slug }}
         run: |
           python3 - <<'PYEOF'
           import os, re, json
           from datetime import datetime, timezone
 
-          name     = os.environ.get('NAME', '')
-          title    = os.environ.get('TITLE', '')
-          phone    = os.environ.get('PHONE', '')
-          email    = os.environ.get('EMAIL', '')
-          buttons  = os.environ.get('BUTTONS', '').split(',')
-          old_slug = os.environ.get('OLD_SLUG', '').strip()
+          name      = os.environ.get('NAME', '')
+          title     = os.environ.get('TITLE', '')
+          phone     = os.environ.get('PHONE', '')
+          email     = os.environ.get('EMAIL', '')
+          avatar    = os.environ.get('AVATAR', '').strip()
+          cta_label = os.environ.get('CTA_LABEL', '').strip()
+          cta_url   = os.environ.get('CTA_URL', '').strip()
+          buttons   = os.environ.get('BUTTONS', '').split(',')
+          old_slug  = os.environ.get('OLD_SLUG', '').strip()
 
           slug = re.sub(r'[^a-z0-9-]', '', name.lower().replace(' ', '-'))
           created_at = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -80,8 +86,14 @@ jobs:
               vcard_href = f"data:text/vcard;charset=utf-8;base64,{vcard_b64}"
               vcard_btn = f'            <a href="{vcard_href}" download="{slug}.vcf" class="btn btn-cta"><i class="fa-solid fa-address-card"></i> Save Contact</a>\n'
 
+          # Custom Action Button
+          custom_btn = ''
+          if cta_label and cta_url:
+              custom_btn = f'            <a href="{cta_url}" target="_blank" class="btn btn-cta"><i class="fa-solid fa-star"></i> {cta_label}</a>\n'
+
           links = ''
           links += vcard_btn
+          links += custom_btn
           links += btn('exchange', 'https://docs.google.com/forms/d/14wVCaet2PdJ1KEoxqpgqqCimXy2QNX9dY4oJX4IcJ0I/viewform', 'fa-solid fa-address-book', 'Send Me Your Details', 'btn-cta')
           if phone:
               links += btn('call',     f'tel:{phone44}',                 'fa-solid fa-phone',     'Call Me')
@@ -99,6 +111,9 @@ jobs:
           # Strip trailing newline from links block
           links = links.rstrip('\n')
 
+          avatar_src = avatar if avatar else 'assets/images/logo.jpg'
+          og_image = avatar if (avatar and avatar.startswith('http')) else 'https://beondrogue.github.io/beond-rogue-cards/assets/images/logo.jpg'
+
           html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,11 +124,11 @@ jobs:
     <meta property="og:type" content="profile">
     <meta property="og:title" content="{name} - {title} | BEOND ROGUE">
     <meta property="og:description" content="Digital Business Card for {name} ({title}) at BEOND ROGUE - Cards & Collectables.">
-    <meta property="og:image" content="https://beondrogue.github.io/beond-rogue-cards/assets/images/logo.jpg">
+    <meta property="og:image" content="{og_image}">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="{name} - {title} | BEOND ROGUE">
     <meta property="twitter:description" content="Digital Business Card for {name} ({title}) at BEOND ROGUE.">
-    <meta property="twitter:image" content="https://beondrogue.github.io/beond-rogue-cards/assets/images/logo.jpg">
+    <meta property="twitter:image" content="{og_image}">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -121,7 +136,7 @@ jobs:
     <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
     <div class="card-container">
         <div class="profile-section">
-            <img src="assets/images/logo.jpg" alt="Beond Rogue Logo" class="profile-logo">
+            <img src="{avatar_src}" alt="{name} Profile Logo" class="profile-logo">
             <h1 class="name">{name}</h1>
             <h2 class="title">{title}</h2>
         </div>
@@ -180,6 +195,9 @@ jobs:
               'slug': slug if not (is_john or is_fiona) else target_slug,
               'phone': phone,
               'email': email,
+              'avatar': avatar,
+              'cta_label': cta_label,
+              'cta_url': cta_url,
               'buttons': os.environ.get('BUTTONS', ''),
               'created_at': created_at,
               'url': card_url

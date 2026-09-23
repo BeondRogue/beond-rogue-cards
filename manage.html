@@ -297,12 +297,24 @@
             <input type="text" id="edit-title" placeholder="Job title">
         </div>
         <div class="edit-group">
+            <label>Profile Photo / Logo URL (Optional)</label>
+            <input type="text" id="edit-avatar" placeholder="e.g. https://.../photo.jpg">
+        </div>
+        <div class="edit-group">
             <label>Phone Number</label>
             <input type="tel" id="edit-phone" placeholder="e.g. 07359 559614">
         </div>
         <div class="edit-group">
             <label>Email Address</label>
             <input type="email" id="edit-email" placeholder="e.g. name@beondrogue.co.uk">
+        </div>
+        <div class="edit-group">
+            <label>Custom Button Label (Optional)</label>
+            <input type="text" id="edit-cta-label" placeholder="e.g. Book a Meeting / Portfolio">
+        </div>
+        <div class="edit-group">
+            <label>Custom Button Link (Optional URL)</label>
+            <input type="text" id="edit-cta-url" placeholder="e.g. https://calendly.com/your-name">
         </div>
 
         <div class="edit-section-title"><i class="fa-solid fa-toggle-on" style="color:#F7CA18;margin-right:6px;"></i>Buttons to show</div>
@@ -499,10 +511,13 @@
         if (!card) return;
         editingSlug = slug;
 
-        document.getElementById('edit-name').value  = card.name;
-        document.getElementById('edit-title').value = card.title;
-        document.getElementById('edit-phone').value = card.phone || '';
-        document.getElementById('edit-email').value = card.email || '';
+        document.getElementById('edit-name').value      = card.name;
+        document.getElementById('edit-title').value     = card.title;
+        document.getElementById('edit-avatar').value    = card.avatar || '';
+        document.getElementById('edit-phone').value     = card.phone || '';
+        document.getElementById('edit-email').value     = card.email || '';
+        document.getElementById('edit-cta-label').value = card.cta_label || '';
+        document.getElementById('edit-cta-url').value   = card.cta_url || '';
 
         const btns = (card.buttons || '').split(',');
         ['vcard','exchange','call','email','whatsapp','website','instagram','tiktok','youtube','facebook','linkedin']
@@ -515,8 +530,14 @@
     }
 
     async function saveEdit() {
-        const name  = document.getElementById('edit-name').value.trim();
-        const title = document.getElementById('edit-title').value.trim();
+        const name      = document.getElementById('edit-name').value.trim();
+        const title     = document.getElementById('edit-title').value.trim();
+        const avatar    = document.getElementById('edit-avatar').value.trim();
+        const phone     = document.getElementById('edit-phone').value.trim();
+        const email     = document.getElementById('edit-email').value.trim();
+        const cta_label = document.getElementById('edit-cta-label').value.trim();
+        const cta_url   = document.getElementById('edit-cta-url').value.trim();
+
         if (!name || !title) {
             document.getElementById('edit-status').style.color = '#ff6b6b';
             document.getElementById('edit-status').textContent = '⚠️ Name and title are required.';
@@ -544,11 +565,8 @@
                 body: JSON.stringify({
                     event_type: 'update-card',
                     client_payload: {
-                        name,
-                        title,
-                        phone:    document.getElementById('edit-phone').value.trim(),
-                        email:    document.getElementById('edit-email').value.trim(),
-                        buttons:  btnList.join(','),
+                        name, title, phone, email, avatar, cta_label, cta_url,
+                        buttons: btnList.join(','),
                         old_slug: editingSlug
                     }
                 })
@@ -566,9 +584,7 @@
                 if (idx !== -1) {
                     allCards[idx] = {
                         ...allCards[idx],
-                        name, title,
-                        phone: document.getElementById('edit-phone').value.trim(),
-                        email: document.getElementById('edit-email').value.trim(),
+                        name, title, phone, email, avatar, cta_label, cta_url,
                         buttons: btnList.join(','),
                         slug: newSlug,
                         url: updatedUrl

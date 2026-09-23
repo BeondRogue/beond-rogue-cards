@@ -212,6 +212,11 @@
                 <input type="text" id="job-title" placeholder="e.g. Sales Assistant" required>
             </div>
 
+            <div class="form-group">
+                <label for="avatar-url">Profile Photo / Logo URL (Optional)</label>
+                <input type="text" id="avatar-url" placeholder="e.g. https://.../photo.jpg (defaults to shop logo)">
+            </div>
+
             <hr class="section-divider">
             <p class="section-title"><i class="fa-solid fa-address-book" style="color:#F7CA18;margin-right:6px;"></i>Contact details (optional)</p>
 
@@ -222,6 +227,18 @@
             <div class="form-group">
                 <label for="email-addr">Email Address</label>
                 <input type="email" id="email-addr" placeholder="e.g. name@beondrogue.co.uk">
+            </div>
+
+            <hr class="section-divider">
+            <p class="section-title"><i class="fa-solid fa-star" style="color:#F7CA18;margin-right:6px;"></i>Custom Action Button (optional)</p>
+
+            <div class="form-group">
+                <label for="cta-label">Custom Button Label</label>
+                <input type="text" id="cta-label" placeholder="e.g. Book a Meeting / Portfolio">
+            </div>
+            <div class="form-group">
+                <label for="cta-url">Custom Button Link (URL)</label>
+                <input type="text" id="cta-url" placeholder="e.g. https://calendly.com/your-name">
             </div>
 
             <hr class="section-divider">
@@ -313,10 +330,13 @@
 
         /* ---- Card creation ---- */
         async function createCard() {
-            const name     = document.getElementById('name').value.trim();
-            const title    = document.getElementById('job-title').value.trim();
-            const phone    = document.getElementById('phone').value.trim();
-            const email    = document.getElementById('email-addr').value.trim();
+            const name      = document.getElementById('name').value.trim();
+            const title     = document.getElementById('job-title').value.trim();
+            const phone     = document.getElementById('phone').value.trim();
+            const email     = document.getElementById('email-addr').value.trim();
+            const avatar    = document.getElementById('avatar-url').value.trim();
+            const cta_label = document.getElementById('cta-label').value.trim();
+            const cta_url   = document.getElementById('cta-url').value.trim();
 
             // Build a comma-separated list of enabled buttons (keeps payload under GitHub's 10-property limit)
             const btnList = [];
@@ -354,7 +374,7 @@
                         },
                         body: JSON.stringify({
                             event_type: 'create-card',
-                            client_payload: { name, title, phone, email, buttons }
+                            client_payload: { name, title, phone, email, avatar, cta_label, cta_url, buttons }
                         })
                     }
                 );
