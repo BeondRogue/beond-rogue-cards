@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out the repo that stores generated cards
       - name: Checkout cards repo
         uses: actions/checkout@v4
         with:
@@ -17,7 +16,6 @@ jobs:
           token: ${{ secrets.PAT }}
           path: cards-repo
 
-      # 2. Build the HTML from the payload
       - name: Generate card HTML
         env:
           NAME:    ${{ github.event.client_payload.name }}
@@ -26,102 +24,84 @@ jobs:
           EMAIL:   ${{ github.event.client_payload.email }}
           BUTTONS: ${{ github.event.client_payload.buttons }}
         run: |
-          # --- Derive slug (URL-safe filename) ---
-          SLUG=$(echo "$NAME" | tr '[:upper:]' '[:lower:]' | sed 's/ /-/g' | sed 's/[^a-z0-9-]//g')
-          echo "Creating card for: $NAME ($SLUG)"
+          python3 - <<'PYEOF'
+          import os, re
 
-          # --- Helper: check if a button name is in the BUTTONS string ---
-          has_btn() { echo "$BUTTONS" | grep -qw "$1"; }
+          name    = os.environ.get('NAME', '')
+          title   = os.environ.get('TITLE', '')
+          phone   = os.environ.get('PHONE', '')
+          email   = os.environ.get('EMAIL', '')
+          buttons = os.environ.get('BUTTONS', '').split(',')
 
-          # --- Build each button block ---
-          EXCHANGE_BTN=""
-          if has_btn "exchange"; then
-            EXCHANGE_BTN='            <a href="https://docs.google.com/forms/d/14wVCaet2PdJ1KEoxqpgqqCimXy2QNX9dY4oJX4IcJ0I/viewform" target="_blank" class="btn btn-cta"><i class="fa-solid fa-address-book"></i> Send Me Your Details</a>'
-          fi
+          slug = re.sub(r'[^a-z0-9-]', '', name.lower().replace(' ', '-'))
 
-          CALL_BTN=""
-          if has_btn "call" && [ -n "$PHONE" ]; then
-            CALL_BTN="            <a href=\"tel:+44${PHONE#0}\" class=\"btn\"><i class=\"fa-solid fa-phone\"></i> Call Me</a>"
-          fi
+          def btn(key, href, icon, label, extra=''):
+              if key in buttons:
+                  cls = f'btn {extra}' if extra else 'btn'
+                  return f'<a href="{href}" target="_blank" class="{cls}"><i class="{icon}"></i> {label}</a>\n'
+              return ''
 
-          EMAIL_BTN=""
-          if has_btn "email" && [ -n "$EMAIL" ]; then
-            EMAIL_BTN="            <a href=\"mailto:$EMAIL\" class=\"btn\"><i class=\"fa-solid fa-envelope\"></i> Email Me</a>"
-          fi
+          wa_num = re.sub(r'^0', '44', phone).replace(' ', '')
+          phone44 = '+44' + phone.lstrip('0')
 
-          WHATSAPP_BTN=""
-          if has_btn "whatsapp" && [ -n "$PHONE" ]; then
-            WA_NUM=$(echo "$PHONE" | sed 's/^0/44/' | sed 's/ //g')
-            WHATSAPP_BTN="            <a href=\"https://wa.me/$WA_NUM\" target=\"_blank\" class=\"btn\"><i class=\"fa-brands fa-whatsapp\"></i> WhatsApp</a>"
-          fi
+          links = ''
+          links += btn('exchange', 'https://docs.google.com/forms/d/14wVCaet2PdJ1KEoxqpgqqCimXy2QNX9dY4oJX4IcJ0I/viewform', 'fa-solid fa-address-book', 'Send Me Your Details', 'btn-cta')
+          if phone:
+              links += btn('call',     f'tel:{phone44}',                                                    'fa-solid fa-phone',     'Call Me')
+          if email:
+              links += btn('email',    f'mailto:{email}',                                                   'fa-solid fa-envelope',  'Email Me')
+          if phone:
+              links += btn('whatsapp', f'https://wa.me/{wa_num}',                                           'fa-brands fa-whatsapp', 'WhatsApp')
+          links += btn('website',   'https://beondrogue.co.uk/',                                             'fa-solid fa-globe',     'Official Website')
+          links += btn('instagram', 'https://www.instagram.com/beond_rogue',                                 'fa-brands fa-instagram','Instagram')
+          links += btn('tiktok',    'https://www.tiktok.com/@beond.rogue',                                   'fa-brands fa-tiktok',   'TikTok')
+          links += btn('youtube',   'https://youtube.com/@beondrogue',                                       'fa-brands fa-youtube',  'YouTube')
+          links += btn('facebook',  'https://www.facebook.com/share/19MkQ8F6VM/',                           'fa-brands fa-facebook', 'Facebook')
+          links += btn('linkedin',  'https://www.linkedin.com/in/beond-rogue-1ab925438',                     'fa-brands fa-linkedin', 'LinkedIn')
 
-          WEBSITE_BTN=""
-          has_btn "website" && WEBSITE_BTN='            <a href="https://beondrogue.co.uk/" target="_blank" class="btn"><i class="fa-solid fa-globe"></i> Official Website</a>'
+          html = f"""<!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+              <title>{name} - BEOND ROGUE</title>
+              <link rel="stylesheet" href="assets/css/style.css">
+              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+          </head>
+          <body>
+              <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
+              <div class="card-container">
+                  <div class="profile-section">
+                      <img src="assets/images/logo.jpg" alt="Beond Rogue Logo" class="profile-logo">
+                      <h1 class="name">{name}</h1>
+                      <h2 class="title">{title}</h2>
+                  </div>
+                  <div class="links-section">
+          {links}        </div>
+              </div>
+              <div class="footer">
+                  Not affiliated with Nintendo, Pokemon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
+              </div>
+              <script src="assets/js/main.js"></script>
+          </body>
+          </html>"""
 
-          INSTA_BTN=""
-          has_btn "instagram" && INSTA_BTN='            <a href="https://www.instagram.com/beond_rogue" target="_blank" class="btn"><i class="fa-brands fa-instagram"></i> Instagram</a>'
+          filepath = f'cards-repo/{slug}.html'
+          with open(filepath, 'w') as f:
+              f.write(html)
 
-          TIKTOK_BTN=""
-          has_btn "tiktok" && TIKTOK_BTN='            <a href="https://www.tiktok.com/@beond.rogue" target="_blank" class="btn"><i class="fa-brands fa-tiktok"></i> TikTok</a>'
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              f.write(f'SLUG={slug}\n')
+              f.write(f'CARDNAME={name}\n')
 
-          YT_BTN=""
-          has_btn "youtube" && YT_BTN='            <a href="https://youtube.com/@beondrogue" target="_blank" class="btn"><i class="fa-brands fa-youtube"></i> YouTube</a>'
+          print(f'Written: {filepath}')
+          PYEOF
 
-          FB_BTN=""
-          has_btn "facebook" && FB_BTN='            <a href="https://www.facebook.com/share/19MkQ8F6VM/" target="_blank" class="btn"><i class="fa-brands fa-facebook"></i> Facebook</a>'
-
-          LI_BTN=""
-          has_btn "linkedin" && LI_BTN='            <a href="https://www.linkedin.com/in/beond-rogue-1ab925438" target="_blank" class="btn"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>'
-
-          # --- Write the full HTML file ---
-          cat > "cards-repo/${SLUG}.html" <<HTMLEOF
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>${NAME} - BEOND ROGUE</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
-    <div class="card-container">
-        <div class="profile-section">
-            <img src="assets/images/logo.jpg" alt="Beond Rogue Logo" class="profile-logo">
-            <h1 class="name">${NAME}</h1>
-            <h2 class="title">${TITLE}</h2>
-        </div>
-        <div class="links-section">
-${EXCHANGE_BTN}
-${CALL_BTN}
-${EMAIL_BTN}
-${WHATSAPP_BTN}
-${WEBSITE_BTN}
-${INSTA_BTN}
-${TIKTOK_BTN}
-${YT_BTN}
-${FB_BTN}
-${LI_BTN}
-        </div>
-    </div>
-    <div class="footer">
-        Not affiliated with Nintendo, Pokémon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
-    </div>
-    <script src="assets/js/main.js"></script>
-</body>
-</html>
-HTMLEOF
-
-          echo "SLUG=$SLUG" >> $GITHUB_ENV
-          echo "NAME=$NAME" >> $GITHUB_ENV
-
-      # 3. Commit and push the new card
       - name: Commit and push card
         working-directory: cards-repo
         run: |
           git config user.name  "Beond Rogue Card Bot"
           git config user.email "cards@beondrogue.co.uk"
           git add "${SLUG}.html"
-          git commit -m "Add e-business card: ${NAME}"
+          git commit -m "Add e-business card: ${CARDNAME}"
           git push
