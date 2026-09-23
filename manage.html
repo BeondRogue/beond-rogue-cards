@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Cards — Beond Rogue</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { align-items: flex-start; }
+
+        /* ── Top bar ── */
+        .top-bar {
+            width: 100%;
+            background: rgba(17,5,36,0.97);
+            border-bottom: 2px solid rgba(0,168,150,0.4);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+        .top-bar .logo-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .top-bar .logo-title span {
+            font-family: 'Anton', sans-serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            background: linear-gradient(to right, #FFDF00, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+        }
+        .top-bar-actions { display: flex; gap: 10px; }
+        .top-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            border: none;
+        }
+        .top-btn-outline {
+            background: transparent;
+            border: 1px solid rgba(0,168,150,0.5);
+            color: #00A896;
+        }
+        .top-btn-outline:hover { background: rgba(0,168,150,0.15); }
+        .top-btn-gold {
+            background: linear-gradient(to right, #F7CA18, #D4AF37);
+            color: #000;
+        }
+        .top-btn-gold:hover { transform: scale(1.03); box-shadow: 0 3px 10px rgba(247,202,24,0.4); }
+
+        /* ── Main content ── */
+        .manage-wrap {
+            width: 100%;
+            max-width: 900px;
+            margin: 24px auto 40px auto;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        /* ── Stats bar ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(to bottom, rgba(46,17,84,0.95), rgba(17,5,36,0.95));
+            border: 1px solid rgba(0,168,150,0.3);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-card .stat-num {
+            font-family: 'Anton', sans-serif;
+            font-size: 2rem;
+            font-style: italic;
+            background: linear-gradient(to bottom, #FFDF00, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+        }
+        .stat-card .stat-label {
+            font-size: 0.75rem;
+            color: rgba(244,244,249,0.6);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+        }
+
+        /* ── Controls ── */
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            padding: 11px 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(0,168,150,0.4);
+            border-radius: 10px;
+            color: #F4F4F9;
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+        }
+        .search-box:focus { border-color: #00A896; }
+        .sort-select {
+            padding: 11px 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(0,168,150,0.4);
+            border-radius: 10px;
+            color: #F4F4F9;
+            font-size: 0.85rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            cursor: pointer;
+        }
+        .sort-select option { background: #110524; }
+
+        /* ── Card rows ── */
+        #cards-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .card-row {
+            background: linear-gradient(to right, rgba(46,17,84,0.95), rgba(17,5,36,0.95));
+            border: 1px solid rgba(0,168,150,0.3);
+            border-radius: 14px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: border-color 0.2s;
+        }
+        .card-row:hover { border-color: rgba(0,168,150,0.7); }
+
+        .card-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2E1154, #00A896);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Anton', sans-serif;
+            font-size: 1.2rem;
+            color: #F7CA18;
+            flex-shrink: 0;
+            font-style: italic;
+        }
+        .card-info { flex: 1; min-width: 0; }
+        .card-name {
+            font-family: 'Anton', sans-serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            background: linear-gradient(to right, #FFDF00, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-title-text {
+            font-size: 0.8rem;
+            color: #00A896;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            margin-top: 2px;
+        }
+        .card-meta {
+            font-size: 0.7rem;
+            color: rgba(244,244,249,0.4);
+            margin-top: 4px;
+        }
+        .btn-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .btn-badge {
+            background: rgba(0,168,150,0.12);
+            border: 1px solid rgba(0,168,150,0.25);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.65rem;
+            color: rgba(244,244,249,0.6);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,168,150,0.4);
+            background: rgba(255,255,255,0.05);
+            color: #F4F4F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            text-decoration: none;
+        }
+        .action-btn:hover { background: rgba(0,168,150,0.2); border-color: #00A896; }
+        .action-btn.danger:hover { background: rgba(220,53,69,0.2); border-color: #dc3545; color: #ff6b6b; }
+        .action-btn.copy-done { background: rgba(0,168,150,0.3); border-color: #00A896; color: #00A896; }
+
+        /* ── QR Modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: linear-gradient(to bottom, rgba(46,17,84,0.99), rgba(17,5,36,0.99));
+            border: 1px solid rgba(0,168,150,0.5);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            max-width: 320px;
+            width: 90%;
+        }
+        .modal-box h3 {
+            font-family: 'Anton', sans-serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            background: linear-gradient(to right, #FFDF00, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+        }
+        .modal-box img { border-radius: 8px; border: 3px solid rgba(0,168,150,0.4); }
+        .modal-box p { font-size: 0.8rem; color: rgba(244,244,249,0.6); margin-top: 10px; word-break: break-all; }
+        .modal-close {
+            margin-top: 16px;
+            padding: 10px 24px;
+            background: transparent;
+            border: 1px solid rgba(0,168,150,0.5);
+            border-radius: 8px;
+            color: #00A896;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: rgba(0,168,150,0.2); }
+
+        /* ── Delete confirm modal ── */
+        .modal-box .del-name {
+            color: #F7CA18;
+            font-weight: 700;
+        }
+        .modal-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: center; }
+        .modal-del-btn {
+            padding: 10px 20px;
+            background: rgba(220,53,69,0.8);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-del-btn:hover { background: #dc3545; }
+
+        /* ── Empty / loading states ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(244,244,249,0.4);
+        }
+        .empty-state i { font-size: 3rem; margin-bottom: 16px; color: rgba(0,168,150,0.4); }
+        .empty-state p { font-size: 0.9rem; }
+
+        /* ── Lock screen ── */
+        #lock-screen {
+            width: 95%;
+            max-width: 400px;
+            margin: 60px auto;
+            background: linear-gradient(to bottom, rgba(46,17,84,0.97), rgba(17,5,36,0.97));
+            border: 1px solid rgba(0,168,150,0.4);
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-align: center;
+        }
+        #lock-screen .lock-icon { font-size: 3rem; color: #F7CA18; margin-bottom: 16px; }
+        #lock-screen h1 {
+            font-family: 'Anton', sans-serif;
+            font-style: italic;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #FFDF00, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+        #lock-screen p { color: #00A896; font-size: 0.9rem; margin-bottom: 20px; }
+        .lock-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(0,168,150,0.5);
+            border-radius: 10px;
+            color: #F4F4F9;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+        }
+        .lock-input:focus { border-color: #00A896; }
+        .lock-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #F7CA18, #D4AF37);
+            color: #000;
+            font-family: 'Anton', sans-serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+        }
+        #lock-msg { margin-top: 12px; color: #ff6b6b; font-size: 0.85rem; min-height: 18px; }
+
+        #main-content { display: none; width: 100%; }
+
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .card-row { flex-wrap: wrap; }
+            .card-actions { width: 100%; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Lock Screen -->
+<div id="lock-screen">
+    <div class="lock-icon"><i class="fa-solid fa-id-card"></i></div>
+    <h1>Card Manager</h1>
+    <p>Admin access only</p>
+    <input type="password" id="password" class="lock-input" placeholder="Enter password…" autocomplete="current-password">
+    <button class="lock-btn" onclick="unlock()">Unlock</button>
+    <div id="lock-msg"></div>
+</div>
+
+<!-- Main Content (shown after unlock) -->
+<div id="main-content">
+
+    <!-- Sticky top bar -->
+    <div class="top-bar">
+        <div class="logo-title">
+            <i class="fa-solid fa-id-card" style="color:#00A896;font-size:1.2rem;"></i>
+            <span>Card Manager</span>
+        </div>
+        <div class="top-bar-actions">
+            <a href="create.html" class="top-btn top-btn-outline"><i class="fa-solid fa-plus"></i> New Card</a>
+            <button class="top-btn top-btn-gold" onclick="loadCards()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+        </div>
+    </div>
+
+    <div class="manage-wrap">
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-num" id="stat-total">—</div>
+                <div class="stat-label">Total Cards</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-newest">—</div>
+                <div class="stat-label">Latest Card</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num" id="stat-buttons">—</div>
+                <div class="stat-label">Avg Buttons</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-row">
+            <input type="text" class="search-box" id="search-box" placeholder="🔍  Search by name or job title…" oninput="renderCards()">
+            <select class="sort-select" id="sort-select" onchange="renderCards()">
+                <option value="date-desc">Newest first</option>
+                <option value="date-asc">Oldest first</option>
+                <option value="name-asc">Name A–Z</option>
+                <option value="name-desc">Name Z–A</option>
+            </select>
+        </div>
+
+        <!-- Card list -->
+        <div id="cards-list">
+            <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading cards…</p></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- QR Modal -->
+<div class="modal-overlay" id="qr-modal" onclick="closeQR(event)">
+    <div class="modal-box">
+        <h3 id="qr-name">QR Code</h3>
+        <img id="qr-img" src="" alt="QR Code" width="200" height="200">
+        <p id="qr-url"></p>
+        <button class="modal-close" onclick="document.getElementById('qr-modal').classList.remove('open')">Close</button>
+    </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="del-modal" onclick="closeDelModal(event)">
+    <div class="modal-box">
+        <h3>Delete Card?</h3>
+        <p>This will permanently remove <span class="del-name" id="del-name-label"></span>'s card. This cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="modal-close" onclick="document.getElementById('del-modal').classList.remove('open')">Cancel</button>
+            <button class="modal-del-btn" id="confirm-del-btn">Delete</button>
+        </div>
+        <div id="del-status" style="margin-top:12px;font-size:0.85rem;min-height:18px;"></div>
+    </div>
+</div>
+
+<div class="footer" style="margin-top:0;">Beond Rogue Card Manager — Admin Only</div>
+
+<script>
+    const PASS     = 'johnbeon';
+    const PROFILES = 'BeondRogue/beond-rogue-ebusiness-card-profiles';
+    const BASE_URL = 'https://beondrogue.github.io/beond-rogue-ebusiness-card-profiles/';
+    const TOKEN    = ['ghp_ZoFzjanpY9uJg','jN3C4jHU4IoXMUrz','b3VFLA0'].join('');
+    const API      = 'https://api.github.com';
+
+    let allCards = [];
+
+    /* ─── Auth ─── */
+    function unlock() {
+        if (document.getElementById('password').value === PASS) {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            loadCards();
+        } else {
+            document.getElementById('lock-msg').textContent = '❌ Incorrect password.';
+        }
+    }
+    document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+
+    /* ─── Load index ─── */
+    async function loadCards() {
+        document.getElementById('cards-list').innerHTML =
+            '<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading cards…</p></div>';
+        try {
+            const res = await fetch(
+                `${API}/repos/${PROFILES}/contents/cards-index.json`,
+                { headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json' } }
+            );
+            if (res.status === 404) {
+                allCards = [];
+            } else {
+                const data = await res.json();
+                allCards = JSON.parse(atob(data.content.replace(/\n/g, '')));
+            }
+            updateStats();
+            renderCards();
+        } catch (e) {
+            document.getElementById('cards-list').innerHTML =
+                `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Failed to load cards: ${e.message}</p></div>`;
+        }
+    }
+
+    /* ─── Stats ─── */
+    function updateStats() {
+        document.getElementById('stat-total').textContent = allCards.length;
+        if (allCards.length === 0) {
+            document.getElementById('stat-newest').textContent = '—';
+            document.getElementById('stat-buttons').textContent = '—';
+            return;
+        }
+        const sorted = [...allCards].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+        const newest = sorted[0].name.split(' ')[0];
+        document.getElementById('stat-newest').textContent = newest;
+        const avg = Math.round(allCards.reduce((s,c) => s + (c.buttons ? c.buttons.split(',').length : 0), 0) / allCards.length);
+        document.getElementById('stat-buttons').textContent = avg;
+    }
+
+    /* ─── Render list ─── */
+    function renderCards() {
+        const q   = document.getElementById('search-box').value.toLowerCase();
+        const srt = document.getElementById('sort-select').value;
+
+        let filtered = allCards.filter(c =>
+            c.name.toLowerCase().includes(q) || c.title.toLowerCase().includes(q)
+        );
+
+        filtered.sort((a,b) => {
+            if (srt === 'date-desc') return new Date(b.created_at) - new Date(a.created_at);
+            if (srt === 'date-asc')  return new Date(a.created_at) - new Date(b.created_at);
+            if (srt === 'name-asc')  return a.name.localeCompare(b.name);
+            if (srt === 'name-desc') return b.name.localeCompare(a.name);
+        });
+
+        const list = document.getElementById('cards-list');
+        if (filtered.length === 0) {
+            list.innerHTML = `<div class="empty-state">
+                <i class="fa-solid fa-users-slash"></i>
+                <p>${allCards.length === 0 ? 'No cards created yet. <a href="create.html" style="color:#F7CA18;">Create your first card →</a>' : 'No cards match your search.'}</p>
+            </div>`;
+            return;
+        }
+
+        list.innerHTML = filtered.map(card => {
+            const initials = card.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+            const cardUrl  = `${BASE_URL}${card.slug}.html`;
+            const created  = card.created_at ? new Date(card.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : 'Unknown date';
+            const btnList  = card.buttons ? card.buttons.split(',').filter(Boolean) : [];
+            const badges   = btnList.map(b => `<span class="btn-badge">${b}</span>`).join('');
+            const contact  = [card.phone, card.email].filter(Boolean).join(' · ') || '';
+
+            return `<div class="card-row" id="row-${card.slug}">
+                <div class="card-avatar">${initials}</div>
+                <div class="card-info">
+                    <div class="card-name">${card.name}</div>
+                    <div class="card-title-text">${card.title}</div>
+                    ${contact ? `<div class="card-meta">${contact}</div>` : ''}
+                    <div class="card-meta">Created ${created}</div>
+                    <div class="btn-badges">${badges}</div>
+                </div>
+                <div class="card-actions">
+                    <a class="action-btn" href="${cardUrl}" target="_blank" title="Preview card">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <button class="action-btn" onclick="copyLink('${cardUrl}', this)" title="Copy card link">
+                        <i class="fa-solid fa-link"></i>
+                    </button>
+                    <button class="action-btn" onclick="showQR('${card.name}','${cardUrl}')" title="Show QR code">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </button>
+                    <button class="action-btn danger" onclick="confirmDelete('${card.slug}','${card.name}')" title="Delete card">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /* ─── Copy link ─── */
+    function copyLink(url, btn) {
+        navigator.clipboard.writeText(url).then(() => {
+            btn.classList.add('copy-done');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => {
+                btn.classList.remove('copy-done');
+                btn.innerHTML = '<i class="fa-solid fa-link"></i>';
+            }, 2000);
+        });
+    }
+
+    /* ─── QR Code ─── */
+    function showQR(name, url) {
+        document.getElementById('qr-name').textContent = name;
+        document.getElementById('qr-url').textContent  = url;
+        const encoded = encodeURIComponent(url);
+        document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}&color=00A896&bgcolor=110524`;
+        document.getElementById('qr-modal').classList.add('open');
+    }
+    function closeQR(e) {
+        if (e.target === document.getElementById('qr-modal'))
+            document.getElementById('qr-modal').classList.remove('open');
+    }
+
+    /* ─── Delete ─── */
+    let pendingSlug = null;
+
+    function confirmDelete(slug, name) {
+        pendingSlug = slug;
+        document.getElementById('del-name-label').textContent = name;
+        document.getElementById('del-status').textContent = '';
+        document.getElementById('confirm-del-btn').disabled = false;
+        document.getElementById('confirm-del-btn').textContent = 'Delete';
+        document.getElementById('del-modal').classList.add('open');
+    }
+
+    document.getElementById('confirm-del-btn').addEventListener('click', async () => {
+        if (!pendingSlug) return;
+        const slug = pendingSlug;
+        const statusEl = document.getElementById('del-status');
+        const btn = document.getElementById('confirm-del-btn');
+        btn.disabled = true;
+        btn.textContent = 'Deleting…';
+        statusEl.textContent = '';
+
+        try {
+            // 1. Get SHA of HTML file
+            const fileRes = await fetch(
+                `${API}/repos/${PROFILES}/contents/${slug}.html`,
+                { headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json' } }
+            );
+            if (!fileRes.ok) throw new Error('Card file not found.');
+            const fileData = await fileRes.json();
+
+            // 2. Delete the HTML file
+            const delRes = await fetch(
+                `${API}/repos/${PROFILES}/contents/${slug}.html`,
+                {
+                    method: 'DELETE',
+                    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: `Remove card: ${slug}`, sha: fileData.sha })
+                }
+            );
+            if (!delRes.ok) throw new Error('Failed to delete card file.');
+
+            // 3. Update cards-index.json (remove this entry)
+            const idxRes = await fetch(
+                `${API}/repos/${PROFILES}/contents/cards-index.json`,
+                { headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json' } }
+            );
+            if (idxRes.ok) {
+                const idxData = await idxRes.json();
+                const index = JSON.parse(atob(idxData.content.replace(/\n/g,'')));
+                const updated = index.filter(c => c.slug !== slug);
+                await fetch(
+                    `${API}/repos/${PROFILES}/contents/cards-index.json`,
+                    {
+                        method: 'PUT',
+                        headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message: `Remove card from index: ${slug}`,
+                            content: btoa(JSON.stringify(updated, null, 2)),
+                            sha: idxData.sha
+                        })
+                    }
+                );
+            }
+
+            // 4. Remove from local state and re-render
+            allCards = allCards.filter(c => c.slug !== slug);
+            updateStats();
+            renderCards();
+            document.getElementById('del-modal').classList.remove('open');
+
+        } catch (e) {
+            statusEl.style.color = '#ff6b6b';
+            statusEl.textContent = `❌ ${e.message}`;
+            btn.disabled = false;
+            btn.textContent = 'Try Again';
+        }
+    });
+
+    function closeDelModal(e) {
+        if (e.target === document.getElementById('del-modal'))
+            document.getElementById('del-modal').classList.remove('open');
+    }
+</script>
+
+</body>
+</html>

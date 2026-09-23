@@ -16,7 +16,7 @@ jobs:
           token: ${{ secrets.PAT }}
           path: cards-repo
 
-      - name: Generate card HTML
+      - name: Generate card HTML and update index
         env:
           NAME:    ${{ github.event.client_payload.name }}
           TITLE:   ${{ github.event.client_payload.title }}
@@ -25,7 +25,8 @@ jobs:
           BUTTONS: ${{ github.event.client_payload.buttons }}
         run: |
           python3 - <<'PYEOF'
-          import os, re
+          import os, re, json
+          from datetime import datetime, timezone
 
           name    = os.environ.get('NAME', '')
           title   = os.environ.get('TITLE', '')
@@ -34,6 +35,7 @@ jobs:
           buttons = os.environ.get('BUTTONS', '').split(',')
 
           slug = re.sub(r'[^a-z0-9-]', '', name.lower().replace(' ', '-'))
+          created_at = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 
           def btn(key, href, icon, label, extra=''):
               if key in buttons:
@@ -42,59 +44,86 @@ jobs:
               return ''
 
           wa_num = re.sub(r'^0', '44', phone).replace(' ', '')
-          phone44 = '+44' + phone.lstrip('0')
+          phone44 = '+44' + phone.lstrip('0') if phone else ''
 
           links = ''
           links += btn('exchange', 'https://docs.google.com/forms/d/14wVCaet2PdJ1KEoxqpgqqCimXy2QNX9dY4oJX4IcJ0I/viewform', 'fa-solid fa-address-book', 'Send Me Your Details', 'btn-cta')
           if phone:
-              links += btn('call',     f'tel:{phone44}',                                                    'fa-solid fa-phone',     'Call Me')
+              links += btn('call',     f'tel:{phone44}',                 'fa-solid fa-phone',     'Call Me')
           if email:
-              links += btn('email',    f'mailto:{email}',                                                   'fa-solid fa-envelope',  'Email Me')
+              links += btn('email',    f'mailto:{email}',                'fa-solid fa-envelope',  'Email Me')
           if phone:
-              links += btn('whatsapp', f'https://wa.me/{wa_num}',                                           'fa-brands fa-whatsapp', 'WhatsApp')
-          links += btn('website',   'https://beondrogue.co.uk/',                                             'fa-solid fa-globe',     'Official Website')
-          links += btn('instagram', 'https://www.instagram.com/beond_rogue',                                 'fa-brands fa-instagram','Instagram')
-          links += btn('tiktok',    'https://www.tiktok.com/@beond.rogue',                                   'fa-brands fa-tiktok',   'TikTok')
-          links += btn('youtube',   'https://youtube.com/@beondrogue',                                       'fa-brands fa-youtube',  'YouTube')
-          links += btn('facebook',  'https://www.facebook.com/share/19MkQ8F6VM/',                           'fa-brands fa-facebook', 'Facebook')
-          links += btn('linkedin',  'https://www.linkedin.com/in/beond-rogue-1ab925438',                     'fa-brands fa-linkedin', 'LinkedIn')
+              links += btn('whatsapp', f'https://wa.me/{wa_num}',        'fa-brands fa-whatsapp', 'WhatsApp')
+          links += btn('website',   'https://beondrogue.co.uk/',          'fa-solid fa-globe',     'Official Website')
+          links += btn('instagram', 'https://www.instagram.com/beond_rogue', 'fa-brands fa-instagram','Instagram')
+          links += btn('tiktok',    'https://www.tiktok.com/@beond.rogue',   'fa-brands fa-tiktok',   'TikTok')
+          links += btn('youtube',   'https://youtube.com/@beondrogue',       'fa-brands fa-youtube',  'YouTube')
+          links += btn('facebook',  'https://www.facebook.com/share/19MkQ8F6VM/', 'fa-brands fa-facebook', 'Facebook')
+          links += btn('linkedin',  'https://www.linkedin.com/in/beond-rogue-1ab925438', 'fa-brands fa-linkedin', 'LinkedIn')
 
           html = f"""<!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-              <title>{name} - BEOND ROGUE</title>
-              <link rel="stylesheet" href="assets/css/style.css">
-              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-          </head>
-          <body>
-              <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
-              <div class="card-container">
-                  <div class="profile-section">
-                      <img src="assets/images/logo.jpg" alt="Beond Rogue Logo" class="profile-logo">
-                      <h1 class="name">{name}</h1>
-                      <h2 class="title">{title}</h2>
-                  </div>
-                  <div class="links-section">
-          {links}        </div>
-              </div>
-              <div class="footer">
-                  Not affiliated with Nintendo, Pokemon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
-              </div>
-              <script src="assets/js/main.js"></script>
-          </body>
-          </html>"""
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{name} - BEOND ROGUE</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
+    <div class="card-container">
+        <div class="profile-section">
+            <img src="assets/images/logo.jpg" alt="Beond Rogue Logo" class="profile-logo">
+            <h1 class="name">{name}</h1>
+            <h2 class="title">{title}</h2>
+        </div>
+        <div class="links-section">
+{links}        </div>
+    </div>
+    <div class="footer">
+        Not affiliated with Nintendo, Pokemon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
+    </div>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>"""
 
+          # Write HTML card
           filepath = f'cards-repo/{slug}.html'
           with open(filepath, 'w') as f:
               f.write(html)
 
+          # Update cards-index.json
+          index_path = 'cards-repo/cards-index.json'
+          if os.path.exists(index_path):
+              with open(index_path) as f:
+                  index = json.load(f)
+          else:
+              index = []
+
+          # Remove any existing entry with same slug (prevents duplicates)
+          index = [c for c in index if c.get('slug') != slug]
+
+          index.append({
+              'name': name,
+              'title': title,
+              'slug': slug,
+              'phone': phone,
+              'email': email,
+              'buttons': os.environ.get('BUTTONS', ''),
+              'created_at': created_at
+          })
+
+          with open(index_path, 'w') as f:
+              json.dump(index, f, indent=2)
+
+          # Export vars for next step
           with open(os.environ['GITHUB_ENV'], 'a') as f:
               f.write(f'SLUG={slug}\n')
               f.write(f'CARDNAME={name}\n')
 
           print(f'Written: {filepath}')
+          print(f'Index now has {len(index)} card(s)')
           PYEOF
 
       - name: Commit and push card
@@ -102,6 +131,6 @@ jobs:
         run: |
           git config user.name  "Beond Rogue Card Bot"
           git config user.email "cards@beondrogue.co.uk"
-          git add "${SLUG}.html"
+          git add "${SLUG}.html" cards-index.json
           git commit -m "Add e-business card: ${CARDNAME}"
           git push
