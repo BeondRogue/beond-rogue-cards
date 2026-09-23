@@ -307,6 +307,7 @@
 
         <div class="edit-section-title"><i class="fa-solid fa-toggle-on" style="color:#F7CA18;margin-right:6px;"></i>Buttons to show</div>
         <div class="btn-toggle-grid">
+            <div class="btn-toggle"><input type="checkbox" id="et-vcard"><i class="fa-solid fa-address-card"></i><label for="et-vcard">Save Contact</label></div>
             <div class="btn-toggle"><input type="checkbox" id="et-exchange"><i class="fa-solid fa-address-book"></i><label for="et-exchange">Send Details</label></div>
             <div class="btn-toggle"><input type="checkbox" id="et-call"><i class="fa-solid fa-phone"></i><label for="et-call">Call Me</label></div>
             <div class="btn-toggle"><input type="checkbox" id="et-email"><i class="fa-solid fa-envelope"></i><label for="et-email">Email Me</label></div>
@@ -504,7 +505,7 @@
         document.getElementById('edit-email').value = card.email || '';
 
         const btns = (card.buttons || '').split(',');
-        ['exchange','call','email','whatsapp','website','instagram','tiktok','youtube','facebook','linkedin']
+        ['vcard','exchange','call','email','whatsapp','website','instagram','tiktok','youtube','facebook','linkedin']
             .forEach(b => { document.getElementById(`et-${b}`).checked = btns.includes(b); });
 
         document.getElementById('edit-status').textContent = '';
@@ -523,7 +524,7 @@
         }
 
         const btnList = [];
-        ['exchange','call','email','whatsapp','website','instagram','tiktok','youtube','facebook','linkedin']
+        ['vcard','exchange','call','email','whatsapp','website','instagram','tiktok','youtube','facebook','linkedin']
             .forEach(b => { if (document.getElementById(`et-${b}`).checked) btnList.push(b); });
 
         const saveBtn = document.getElementById('edit-save-btn');

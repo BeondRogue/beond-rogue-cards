@@ -229,6 +229,11 @@
 
             <div class="toggle-grid">
                 <div class="toggle-item">
+                    <input type="checkbox" id="show-vcard" checked>
+                    <i class="fa-solid fa-address-card"></i>
+                    <label for="show-vcard">Save Contact</label>
+                </div>
+                <div class="toggle-item">
                     <input type="checkbox" id="show-exchange" checked>
                     <i class="fa-solid fa-address-book"></i>
                     <label for="show-exchange">Send Details</label>
@@ -315,6 +320,7 @@
 
             // Build a comma-separated list of enabled buttons (keeps payload under GitHub's 10-property limit)
             const btnList = [];
+            if (document.getElementById('show-vcard').checked)     btnList.push('vcard');
             if (document.getElementById('show-exchange').checked)  btnList.push('exchange');
             if (document.getElementById('show-call').checked)      btnList.push('call');
             if (document.getElementById('show-email').checked)     btnList.push('email');

@@ -66,7 +66,22 @@ jobs:
           wa_num = re.sub(r'^0', '44', phone).replace(' ', '')
           phone44 = '+44' + phone.lstrip('0') if phone else ''
 
+          # Generate vCard Data URI if requested
+          vcard_btn = ''
+          if 'vcard' in buttons:
+              vcard_str = f"BEGIN:VCARD\nVERSION:3.0\nN:{name};;;;\nFN:{name}\nORG:BEOND ROGUE\nTITLE:{title}\n"
+              if phone:
+                  vcard_str += f"TEL;TYPE=CELL:{phone44}\n"
+              if email:
+                  vcard_str += f"EMAIL;TYPE=INTERNET:{email}\n"
+              vcard_str += "URL:https://beondrogue.co.uk/\nEND:VCARD"
+              import base64
+              vcard_b64 = base64.b64encode(vcard_str.encode('utf-8')).decode('utf-8')
+              vcard_href = f"data:text/vcard;charset=utf-8;base64,{vcard_b64}"
+              vcard_btn = f'            <a href="{vcard_href}" download="{slug}.vcf" class="btn btn-cta"><i class="fa-solid fa-address-card"></i> Save Contact</a>\n'
+
           links = ''
+          links += vcard_btn
           links += btn('exchange', 'https://docs.google.com/forms/d/14wVCaet2PdJ1KEoxqpgqqCimXy2QNX9dY4oJX4IcJ0I/viewform', 'fa-solid fa-address-book', 'Send Me Your Details', 'btn-cta')
           if phone:
               links += btn('call',     f'tel:{phone44}',                 'fa-solid fa-phone',     'Call Me')
@@ -90,6 +105,15 @@ jobs:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{name} - BEOND ROGUE</title>
+    <!-- OpenGraph / Social Share Previews -->
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="{name} - {title} | BEOND ROGUE">
+    <meta property="og:description" content="Digital Business Card for {name} ({title}) at BEOND ROGUE - Cards & Collectables.">
+    <meta property="og:image" content="https://beondrogue.github.io/beond-rogue-cards/assets/images/logo.jpg">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="{name} - {title} | BEOND ROGUE">
+    <meta property="twitter:description" content="Digital Business Card for {name} ({title}) at BEOND ROGUE.">
+    <meta property="twitter:image" content="https://beondrogue.github.io/beond-rogue-cards/assets/images/logo.jpg">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
