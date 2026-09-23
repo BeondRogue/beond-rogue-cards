@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out the PRIVATE repo that stores generated cards
-      - name: Checkout private cards repo
+      # 1. Check out the repo that stores generated cards
+      - name: Checkout cards repo
         uses: actions/checkout@v4
         with:
           repository: BeondRogue/beond-rogue-ebusiness-card-profiles
@@ -20,107 +20,101 @@ jobs:
       # 2. Build the HTML from the payload
       - name: Generate card HTML
         env:
-          NAME:           ${{ github.event.client_payload.name }}
-          TITLE:          ${{ github.event.client_payload.title }}
-          PHONE:          ${{ github.event.client_payload.phone }}
-          EMAIL:          ${{ github.event.client_payload.email }}
-          SHOW_EXCHANGE:  ${{ github.event.client_payload.showExchange }}
-          SHOW_CALL:      ${{ github.event.client_payload.showCall }}
-          SHOW_EMAIL:     ${{ github.event.client_payload.showEmail }}
-          SHOW_WHATSAPP:  ${{ github.event.client_payload.showWhatsapp }}
-          SHOW_WEBSITE:   ${{ github.event.client_payload.showWebsite }}
-          SHOW_INSTAGRAM: ${{ github.event.client_payload.showInstagram }}
-          SHOW_TIKTOK:    ${{ github.event.client_payload.showTiktok }}
-          SHOW_YOUTUBE:   ${{ github.event.client_payload.showYoutube }}
-          SHOW_FACEBOOK:  ${{ github.event.client_payload.showFacebook }}
-          SHOW_LINKEDIN:  ${{ github.event.client_payload.showLinkedin }}
+          NAME:    ${{ github.event.client_payload.name }}
+          TITLE:   ${{ github.event.client_payload.title }}
+          PHONE:   ${{ github.event.client_payload.phone }}
+          EMAIL:   ${{ github.event.client_payload.email }}
+          BUTTONS: ${{ github.event.client_payload.buttons }}
         run: |
           # --- Derive slug (URL-safe filename) ---
           SLUG=$(echo "$NAME" | tr '[:upper:]' '[:lower:]' | sed 's/ /-/g' | sed 's/[^a-z0-9-]//g')
           echo "Creating card for: $NAME ($SLUG)"
 
-          # --- Helper: output a button block or nothing ---
-          btn() {
-            local show="$1"; local href="$2"; local icon="$3"; local label="$4"; local extra_class="$5"
-            if [ "$show" = "true" ]; then
-              if [ -n "$extra_class" ]; then
-                echo "            <a href=\"$href\" target=\"_blank\" class=\"btn $extra_class\"><i class=\"$icon\"></i> $label</a>"
-              else
-                echo "            <a href=\"$href\" target=\"_blank\" class=\"btn\"><i class=\"$icon\"></i> $label</a>"
-              fi
-            fi
-          }
+          # --- Helper: check if a button name is in the BUTTONS string ---
+          has_btn() { echo "$BUTTONS" | grep -qw "$1"; }
 
-          # --- Build button blocks ---
+          # --- Build each button block ---
           EXCHANGE_BTN=""
-          if [ "$SHOW_EXCHANGE" = "true" ]; then
+          if has_btn "exchange"; then
             EXCHANGE_BTN='            <a href="https://docs.google.com/forms/d/14wVCaet2PdJ1KEoxqpgqqCimXy2QNX9dY4oJX4IcJ0I/viewform" target="_blank" class="btn btn-cta"><i class="fa-solid fa-address-book"></i> Send Me Your Details</a>'
           fi
 
           CALL_BTN=""
-          if [ "$SHOW_CALL" = "true" ] && [ -n "$PHONE" ]; then
+          if has_btn "call" && [ -n "$PHONE" ]; then
             CALL_BTN="            <a href=\"tel:+44${PHONE#0}\" class=\"btn\"><i class=\"fa-solid fa-phone\"></i> Call Me</a>"
           fi
 
           EMAIL_BTN=""
-          if [ "$SHOW_EMAIL" = "true" ] && [ -n "$EMAIL" ]; then
+          if has_btn "email" && [ -n "$EMAIL" ]; then
             EMAIL_BTN="            <a href=\"mailto:$EMAIL\" class=\"btn\"><i class=\"fa-solid fa-envelope\"></i> Email Me</a>"
           fi
 
           WHATSAPP_BTN=""
-          if [ "$SHOW_WHATSAPP" = "true" ] && [ -n "$PHONE" ]; then
+          if has_btn "whatsapp" && [ -n "$PHONE" ]; then
             WA_NUM=$(echo "$PHONE" | sed 's/^0/44/' | sed 's/ //g')
             WHATSAPP_BTN="            <a href=\"https://wa.me/$WA_NUM\" target=\"_blank\" class=\"btn\"><i class=\"fa-brands fa-whatsapp\"></i> WhatsApp</a>"
           fi
 
-          WEBSITE_BTN=$(btn "$SHOW_WEBSITE"   "https://beondrogue.co.uk/"                                                              "fa-solid fa-globe"        "Official Website")
-          INSTA_BTN=$(btn   "$SHOW_INSTAGRAM" "https://www.instagram.com/beond_rogue"                                                 "fa-brands fa-instagram"   "Instagram")
-          TIKTOK_BTN=$(btn  "$SHOW_TIKTOK"   "https://www.tiktok.com/@beond.rogue"                                                   "fa-brands fa-tiktok"      "TikTok")
-          YT_BTN=$(btn      "$SHOW_YOUTUBE"  "https://youtube.com/@beondrogue"                                                        "fa-brands fa-youtube"     "YouTube")
-          FB_BTN=$(btn      "$SHOW_FACEBOOK" "https://www.facebook.com/share/19MkQ8F6VM/"                                             "fa-brands fa-facebook"    "Facebook")
-          LI_BTN=$(btn      "$SHOW_LINKEDIN" "https://www.linkedin.com/in/beond-rogue-1ab925438"                                      "fa-brands fa-linkedin"    "LinkedIn")
+          WEBSITE_BTN=""
+          has_btn "website" && WEBSITE_BTN='            <a href="https://beondrogue.co.uk/" target="_blank" class="btn"><i class="fa-solid fa-globe"></i> Official Website</a>'
+
+          INSTA_BTN=""
+          has_btn "instagram" && INSTA_BTN='            <a href="https://www.instagram.com/beond_rogue" target="_blank" class="btn"><i class="fa-brands fa-instagram"></i> Instagram</a>'
+
+          TIKTOK_BTN=""
+          has_btn "tiktok" && TIKTOK_BTN='            <a href="https://www.tiktok.com/@beond.rogue" target="_blank" class="btn"><i class="fa-brands fa-tiktok"></i> TikTok</a>'
+
+          YT_BTN=""
+          has_btn "youtube" && YT_BTN='            <a href="https://youtube.com/@beondrogue" target="_blank" class="btn"><i class="fa-brands fa-youtube"></i> YouTube</a>'
+
+          FB_BTN=""
+          has_btn "facebook" && FB_BTN='            <a href="https://www.facebook.com/share/19MkQ8F6VM/" target="_blank" class="btn"><i class="fa-brands fa-facebook"></i> Facebook</a>'
+
+          LI_BTN=""
+          has_btn "linkedin" && LI_BTN='            <a href="https://www.linkedin.com/in/beond-rogue-1ab925438" target="_blank" class="btn"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>'
 
           # --- Write the full HTML file ---
           cat > "cards-repo/${SLUG}.html" <<HTMLEOF
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-              <title>${NAME} - BEOND ROGUE</title>
-              <link rel="stylesheet" href="assets/css/style.css">
-              <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-          </head>
-          <body>
-              <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
-              <div class="card-container">
-                  <div class="profile-section">
-                      <img src="assets/images/logo.jpg" alt="Beond Rogue Logo" class="profile-logo">
-                      <h1 class="name">${NAME}</h1>
-                      <h2 class="title">${TITLE}</h2>
-                  </div>
-                  <div class="links-section">
-          ${EXCHANGE_BTN}
-          ${CALL_BTN}
-          ${EMAIL_BTN}
-          ${WHATSAPP_BTN}
-          ${WEBSITE_BTN}
-          ${INSTA_BTN}
-          ${TIKTOK_BTN}
-          ${YT_BTN}
-          ${FB_BTN}
-          ${LI_BTN}
-                  </div>
-              </div>
-              <div class="footer">
-                  Not affiliated with Nintendo, Pokémon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
-              </div>
-              <script src="assets/js/main.js"></script>
-          </body>
-          </html>
-          HTMLEOF
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>${NAME} - BEOND ROGUE</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <img src="assets/images/banner.png" alt="Beond Rogue Banner" class="banner-img">
+    <div class="card-container">
+        <div class="profile-section">
+            <img src="assets/images/logo.jpg" alt="Beond Rogue Logo" class="profile-logo">
+            <h1 class="name">${NAME}</h1>
+            <h2 class="title">${TITLE}</h2>
+        </div>
+        <div class="links-section">
+${EXCHANGE_BTN}
+${CALL_BTN}
+${EMAIL_BTN}
+${WHATSAPP_BTN}
+${WEBSITE_BTN}
+${INSTA_BTN}
+${TIKTOK_BTN}
+${YT_BTN}
+${FB_BTN}
+${LI_BTN}
+        </div>
+    </div>
+    <div class="footer">
+        Not affiliated with Nintendo, Pokémon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
+    </div>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
+HTMLEOF
 
           echo "SLUG=$SLUG" >> $GITHUB_ENV
+          echo "NAME=$NAME" >> $GITHUB_ENV
 
       # 3. Commit and push the new card
       - name: Commit and push card

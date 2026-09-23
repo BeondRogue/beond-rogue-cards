@@ -308,16 +308,19 @@
             const phone    = document.getElementById('phone').value.trim();
             const email    = document.getElementById('email-addr').value.trim();
 
-            const showExchange  = document.getElementById('show-exchange').checked;
-            const showCall      = document.getElementById('show-call').checked;
-            const showEmail     = document.getElementById('show-email').checked;
-            const showWhatsapp  = document.getElementById('show-whatsapp').checked;
-            const showWebsite   = document.getElementById('show-website').checked;
-            const showInstagram = document.getElementById('show-instagram').checked;
-            const showTiktok    = document.getElementById('show-tiktok').checked;
-            const showYoutube   = document.getElementById('show-youtube').checked;
-            const showFacebook  = document.getElementById('show-facebook').checked;
-            const showLinkedin  = document.getElementById('show-linkedin').checked;
+            // Build a comma-separated list of enabled buttons (keeps payload under GitHub's 10-property limit)
+            const btnList = [];
+            if (document.getElementById('show-exchange').checked)  btnList.push('exchange');
+            if (document.getElementById('show-call').checked)      btnList.push('call');
+            if (document.getElementById('show-email').checked)     btnList.push('email');
+            if (document.getElementById('show-whatsapp').checked)  btnList.push('whatsapp');
+            if (document.getElementById('show-website').checked)   btnList.push('website');
+            if (document.getElementById('show-instagram').checked) btnList.push('instagram');
+            if (document.getElementById('show-tiktok').checked)    btnList.push('tiktok');
+            if (document.getElementById('show-youtube').checked)   btnList.push('youtube');
+            if (document.getElementById('show-facebook').checked)  btnList.push('facebook');
+            if (document.getElementById('show-linkedin').checked)  btnList.push('linkedin');
+            const buttons = btnList.join(',');
 
             if (!name || !title) {
                 setStatus('error', '⚠️ Please enter at least a Full Name and Job Title.');
@@ -340,12 +343,7 @@
                         },
                         body: JSON.stringify({
                             event_type: 'create-card',
-                            client_payload: {
-                                name, title, phone, email,
-                                showExchange, showCall, showEmail,
-                                showWhatsapp, showWebsite, showInstagram,
-                                showTiktok, showYoutube, showFacebook, showLinkedin
-                            }
+                            client_payload: { name, title, phone, email, buttons }
                         })
                     }
                 );
