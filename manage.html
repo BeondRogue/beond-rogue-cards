@@ -23,365 +23,222 @@
             z-index: 10;
             box-sizing: border-box;
         }
-        .top-bar .logo-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .top-bar .logo-title { display:flex;align-items:center;gap:10px; }
         .top-bar .logo-title span {
-            font-family: 'Anton', sans-serif;
-            font-style: italic;
-            font-size: 1.2rem;
-            background: linear-gradient(to right, #FFDF00, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+            font-family:'Anton',sans-serif;font-style:italic;font-size:1.2rem;
+            background:linear-gradient(to right,#FFDF00,#D4AF37);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            filter:drop-shadow(0 1px 3px rgba(0,0,0,0.8));
         }
-        .top-bar-actions { display: flex; gap: 10px; }
+        .top-bar-actions { display:flex;gap:10px; }
         .top-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            cursor: pointer;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            border: none;
+            padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:700;
+            letter-spacing:0.04em;cursor:pointer;text-decoration:none;
+            display:flex;align-items:center;gap:6px;transition:all 0.2s;border:none;
         }
-        .top-btn-outline {
-            background: transparent;
-            border: 1px solid rgba(0,168,150,0.5);
-            color: #00A896;
-        }
-        .top-btn-outline:hover { background: rgba(0,168,150,0.15); }
-        .top-btn-gold {
-            background: linear-gradient(to right, #F7CA18, #D4AF37);
-            color: #000;
-        }
-        .top-btn-gold:hover { transform: scale(1.03); box-shadow: 0 3px 10px rgba(247,202,24,0.4); }
+        .top-btn-outline { background:transparent;border:1px solid rgba(0,168,150,0.5);color:#00A896; }
+        .top-btn-outline:hover { background:rgba(0,168,150,0.15); }
+        .top-btn-gold { background:linear-gradient(to right,#F7CA18,#D4AF37);color:#000; }
+        .top-btn-gold:hover { transform:scale(1.03);box-shadow:0 3px 10px rgba(247,202,24,0.4); }
 
-        /* ── Main content ── */
-        .manage-wrap {
-            width: 100%;
-            max-width: 900px;
-            margin: 24px auto 40px auto;
-            padding: 0 16px;
-            box-sizing: border-box;
-        }
+        /* ── Main ── */
+        .manage-wrap { width:100%;max-width:900px;margin:24px auto 40px auto;padding:0 16px;box-sizing:border-box; }
 
-        /* ── Stats bar ── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+        /* ── Stats ── */
+        .stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px; }
         .stat-card {
-            background: linear-gradient(to bottom, rgba(46,17,84,0.95), rgba(17,5,36,0.95));
-            border: 1px solid rgba(0,168,150,0.3);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
+            background:linear-gradient(to bottom,rgba(46,17,84,0.95),rgba(17,5,36,0.95));
+            border:1px solid rgba(0,168,150,0.3);border-radius:14px;padding:16px;text-align:center;
         }
-        .stat-card .stat-num {
-            font-family: 'Anton', sans-serif;
-            font-size: 2rem;
-            font-style: italic;
-            background: linear-gradient(to bottom, #FFDF00, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8));
+        .stat-num {
+            font-family:'Anton',sans-serif;font-size:2rem;font-style:italic;
+            background:linear-gradient(to bottom,#FFDF00,#D4AF37);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            filter:drop-shadow(0 1px 3px rgba(0,0,0,0.8));
         }
-        .stat-card .stat-label {
-            font-size: 0.75rem;
-            color: rgba(244,244,249,0.6);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 4px;
-        }
+        .stat-label { font-size:0.75rem;color:rgba(244,244,249,0.6);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px; }
 
         /* ── Controls ── */
-        .controls-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+        .controls-row { display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap; }
+        .search-box, .sort-select {
+            padding:11px 14px;background:rgba(255,255,255,0.07);
+            border:1px solid rgba(0,168,150,0.4);border-radius:10px;
+            color:#F4F4F9;font-size:0.9rem;font-family:'Montserrat',sans-serif;outline:none;
         }
-        .search-box {
-            flex: 1;
-            min-width: 180px;
-            padding: 11px 14px;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(0,168,150,0.4);
-            border-radius: 10px;
-            color: #F4F4F9;
-            font-size: 0.9rem;
-            font-family: 'Montserrat', sans-serif;
-            outline: none;
-        }
-        .search-box:focus { border-color: #00A896; }
-        .sort-select {
-            padding: 11px 14px;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(0,168,150,0.4);
-            border-radius: 10px;
-            color: #F4F4F9;
-            font-size: 0.85rem;
-            font-family: 'Montserrat', sans-serif;
-            outline: none;
-            cursor: pointer;
-        }
-        .sort-select option { background: #110524; }
+        .search-box { flex:1;min-width:180px; }
+        .search-box:focus, .sort-select:focus { border-color:#00A896; }
+        .sort-select { cursor:pointer; }
+        .sort-select option { background:#110524; }
 
         /* ── Card rows ── */
-        #cards-list { display: flex; flex-direction: column; gap: 12px; }
-
+        #cards-list { display:flex;flex-direction:column;gap:12px; }
         .card-row {
-            background: linear-gradient(to right, rgba(46,17,84,0.95), rgba(17,5,36,0.95));
-            border: 1px solid rgba(0,168,150,0.3);
-            border-radius: 14px;
-            padding: 16px 18px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: border-color 0.2s;
+            background:linear-gradient(to right,rgba(46,17,84,0.95),rgba(17,5,36,0.95));
+            border:1px solid rgba(0,168,150,0.3);border-radius:14px;padding:16px 18px;
+            display:flex;align-items:center;gap:14px;transition:border-color 0.2s;
         }
-        .card-row:hover { border-color: rgba(0,168,150,0.7); }
-
+        .card-row:hover { border-color:rgba(0,168,150,0.7); }
         .card-avatar {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2E1154, #00A896);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Anton', sans-serif;
-            font-size: 1.2rem;
-            color: #F7CA18;
-            flex-shrink: 0;
-            font-style: italic;
+            width:46px;height:46px;border-radius:50%;
+            background:linear-gradient(135deg,#2E1154,#00A896);
+            display:flex;align-items:center;justify-content:center;
+            font-family:'Anton',sans-serif;font-size:1.2rem;color:#F7CA18;
+            flex-shrink:0;font-style:italic;
         }
-        .card-info { flex: 1; min-width: 0; }
+        .card-info { flex:1;min-width:0; }
         .card-name {
-            font-family: 'Anton', sans-serif;
-            font-style: italic;
-            font-size: 1.1rem;
-            background: linear-gradient(to right, #FFDF00, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-family:'Anton',sans-serif;font-style:italic;font-size:1.1rem;
+            background:linear-gradient(to right,#FFDF00,#D4AF37);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            filter:drop-shadow(0 1px 2px rgba(0,0,0,0.8));
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
         }
-        .card-title-text {
-            font-size: 0.8rem;
-            color: #00A896;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            margin-top: 2px;
-        }
-        .card-meta {
-            font-size: 0.7rem;
-            color: rgba(244,244,249,0.4);
-            margin-top: 4px;
-        }
-        .btn-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: 6px;
-        }
+        .card-title-text { font-size:0.8rem;color:#00A896;font-weight:600;letter-spacing:0.04em;margin-top:2px; }
+        .card-meta { font-size:0.7rem;color:rgba(244,244,249,0.4);margin-top:4px; }
+        .btn-badges { display:flex;flex-wrap:wrap;gap:4px;margin-top:6px; }
         .btn-badge {
-            background: rgba(0,168,150,0.12);
-            border: 1px solid rgba(0,168,150,0.25);
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-size: 0.65rem;
-            color: rgba(244,244,249,0.6);
+            background:rgba(0,168,150,0.12);border:1px solid rgba(0,168,150,0.25);
+            border-radius:4px;padding:2px 6px;font-size:0.65rem;color:rgba(244,244,249,0.6);
         }
-
-        .card-actions {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
+        .card-actions { display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end; }
         .action-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: 1px solid rgba(0,168,150,0.4);
-            background: rgba(255,255,255,0.05);
-            color: #F4F4F9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-            text-decoration: none;
+            width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,168,150,0.4);
+            background:rgba(255,255,255,0.05);color:#F4F4F9;
+            display:flex;align-items:center;justify-content:center;
+            cursor:pointer;transition:all 0.2s;font-size:0.9rem;text-decoration:none;
         }
-        .action-btn:hover { background: rgba(0,168,150,0.2); border-color: #00A896; }
-        .action-btn.danger:hover { background: rgba(220,53,69,0.2); border-color: #dc3545; color: #ff6b6b; }
-        .action-btn.copy-done { background: rgba(0,168,150,0.3); border-color: #00A896; color: #00A896; }
+        .action-btn:hover { background:rgba(0,168,150,0.2);border-color:#00A896; }
+        .action-btn.danger:hover { background:rgba(220,53,69,0.2);border-color:#dc3545;color:#ff6b6b; }
+        .action-btn.edit-btn:hover { background:rgba(247,202,24,0.15);border-color:#F7CA18;color:#F7CA18; }
+        .action-btn.copy-done { background:rgba(0,168,150,0.3);border-color:#00A896;color:#00A896; }
 
-        /* ── QR Modal ── */
+        /* ── Modals ── */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.75);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
+            display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);
+            z-index:100;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;
         }
-        .modal-overlay.open { display: flex; }
+        .modal-overlay.open { display:flex; }
         .modal-box {
-            background: linear-gradient(to bottom, rgba(46,17,84,0.99), rgba(17,5,36,0.99));
-            border: 1px solid rgba(0,168,150,0.5);
-            border-radius: 16px;
-            padding: 28px;
-            text-align: center;
-            max-width: 320px;
-            width: 90%;
+            background:linear-gradient(to bottom,rgba(46,17,84,0.99),rgba(17,5,36,0.99));
+            border:1px solid rgba(0,168,150,0.5);border-radius:16px;padding:28px;
+            width:100%;max-width:480px;max-height:90vh;overflow-y:auto;
         }
         .modal-box h3 {
-            font-family: 'Anton', sans-serif;
-            font-style: italic;
-            font-size: 1.2rem;
-            background: linear-gradient(to right, #FFDF00, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 16px;
+            font-family:'Anton',sans-serif;font-style:italic;font-size:1.3rem;
+            background:linear-gradient(to right,#FFDF00,#D4AF37);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            margin-bottom:18px;
         }
-        .modal-box img { border-radius: 8px; border: 3px solid rgba(0,168,150,0.4); }
-        .modal-box p { font-size: 0.8rem; color: rgba(244,244,249,0.6); margin-top: 10px; word-break: break-all; }
-        .modal-close {
-            margin-top: 16px;
-            padding: 10px 24px;
-            background: transparent;
-            border: 1px solid rgba(0,168,150,0.5);
-            border-radius: 8px;
-            color: #00A896;
-            cursor: pointer;
-            font-weight: 700;
-            transition: background 0.2s;
-        }
-        .modal-close:hover { background: rgba(0,168,150,0.2); }
 
-        /* ── Delete confirm modal ── */
-        .modal-box .del-name {
-            color: #F7CA18;
-            font-weight: 700;
+        /* Edit form inside modal */
+        .edit-group { margin-bottom:14px; }
+        .edit-group label {
+            display:block;font-size:0.8rem;font-weight:700;color:#F7CA18;
+            margin-bottom:5px;letter-spacing:0.05em;text-transform:uppercase;
         }
-        .modal-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: center; }
+        .edit-group input[type=text],
+        .edit-group input[type=tel],
+        .edit-group input[type=email] {
+            width:100%;padding:10px 13px;
+            background:rgba(255,255,255,0.07);border:1px solid rgba(0,168,150,0.5);
+            border-radius:8px;color:#F4F4F9;font-size:0.95rem;
+            font-family:'Montserrat',sans-serif;outline:none;box-sizing:border-box;
+        }
+        .edit-group input:focus { border-color:#00A896; }
+        .edit-section-title {
+            font-size:0.78rem;font-weight:700;color:#00A896;text-transform:uppercase;
+            letter-spacing:0.08em;margin:16px 0 10px;
+        }
+        .btn-toggle-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px; }
+        .btn-toggle {
+            display:flex;align-items:center;gap:8px;
+            background:rgba(255,255,255,0.05);border:1px solid rgba(0,168,150,0.3);
+            border-radius:8px;padding:8px 10px;cursor:pointer;transition:background 0.2s;
+        }
+        .btn-toggle:hover { background:rgba(0,168,150,0.12); }
+        .btn-toggle input[type=checkbox] { width:16px;height:16px;accent-color:#00A896;cursor:pointer; }
+        .btn-toggle label { font-size:0.8rem;font-weight:600;cursor:pointer;color:#F4F4F9;margin:0; }
+        .btn-toggle i { color:#F7CA18;font-size:0.9rem;width:14px;text-align:center; }
+
+        .modal-actions { display:flex;gap:10px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap; }
+        .modal-cancel {
+            padding:10px 20px;background:transparent;border:1px solid rgba(0,168,150,0.5);
+            border-radius:8px;color:#00A896;cursor:pointer;font-weight:700;font-family:'Montserrat',sans-serif;
+        }
+        .modal-cancel:hover { background:rgba(0,168,150,0.15); }
+        .modal-save {
+            padding:10px 24px;background:linear-gradient(to right,#F7CA18,#D4AF37);
+            border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;
+            font-family:'Anton',sans-serif;font-size:1rem;font-style:italic;letter-spacing:0.04em;
+        }
+        .modal-save:hover { transform:scale(1.02); }
+        .modal-save:disabled { opacity:0.5;cursor:not-allowed;transform:none; }
         .modal-del-btn {
-            padding: 10px 20px;
-            background: rgba(220,53,69,0.8);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
+            padding:10px 20px;background:rgba(220,53,69,0.8);border:none;
+            border-radius:8px;color:#fff;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;
         }
-        .modal-del-btn:hover { background: #dc3545; }
+        .modal-del-btn:hover { background:#dc3545; }
+        .modal-status { margin-top:12px;font-size:0.85rem;min-height:18px;text-align:center; }
 
-        /* ── Empty / loading states ── */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: rgba(244,244,249,0.4);
-        }
-        .empty-state i { font-size: 3rem; margin-bottom: 16px; color: rgba(0,168,150,0.4); }
-        .empty-state p { font-size: 0.9rem; }
+        /* QR modal */
+        .qr-center { text-align:center; }
+        .qr-center img { border-radius:8px;border:3px solid rgba(0,168,150,0.4); }
+        .qr-center p { font-size:0.78rem;color:rgba(244,244,249,0.6);margin-top:10px;word-break:break-all; }
 
-        /* ── Lock screen ── */
+        /* Empty / loading */
+        .empty-state { text-align:center;padding:60px 20px;color:rgba(244,244,249,0.4); }
+        .empty-state i { font-size:3rem;margin-bottom:16px;color:rgba(0,168,150,0.4); }
+        .empty-state p { font-size:0.9rem; }
+
+        /* Lock */
         #lock-screen {
-            width: 95%;
-            max-width: 400px;
-            margin: 60px auto;
-            background: linear-gradient(to bottom, rgba(46,17,84,0.97), rgba(17,5,36,0.97));
-            border: 1px solid rgba(0,168,150,0.4);
-            border-radius: 20px;
-            padding: 36px 28px;
-            text-align: center;
+            width:95%;max-width:400px;margin:60px auto;
+            background:linear-gradient(to bottom,rgba(46,17,84,0.97),rgba(17,5,36,0.97));
+            border:1px solid rgba(0,168,150,0.4);border-radius:20px;padding:36px 28px;text-align:center;
         }
-        #lock-screen .lock-icon { font-size: 3rem; color: #F7CA18; margin-bottom: 16px; }
+        #lock-screen .lock-icon { font-size:3rem;color:#F7CA18;margin-bottom:16px; }
         #lock-screen h1 {
-            font-family: 'Anton', sans-serif;
-            font-style: italic;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            background: linear-gradient(to bottom, #FFDF00, #D4AF37);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 6px;
+            font-family:'Anton',sans-serif;font-style:italic;font-size:1.8rem;text-transform:uppercase;
+            background:linear-gradient(to bottom,#FFDF00,#D4AF37);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;
         }
-        #lock-screen p { color: #00A896; font-size: 0.9rem; margin-bottom: 20px; }
+        #lock-screen p { color:#00A896;font-size:0.9rem;margin-bottom:20px; }
         .lock-input {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(0,168,150,0.5);
-            border-radius: 10px;
-            color: #F4F4F9;
-            font-size: 1rem;
-            font-family: 'Montserrat', sans-serif;
-            outline: none;
-            box-sizing: border-box;
-            margin-bottom: 14px;
+            width:100%;padding:12px 15px;background:rgba(255,255,255,0.07);
+            border:1px solid rgba(0,168,150,0.5);border-radius:10px;color:#F4F4F9;
+            font-size:1rem;font-family:'Montserrat',sans-serif;outline:none;box-sizing:border-box;margin-bottom:14px;
         }
-        .lock-input:focus { border-color: #00A896; }
+        .lock-input:focus { border-color:#00A896; }
         .lock-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(to right, #F7CA18, #D4AF37);
-            color: #000;
-            font-family: 'Anton', sans-serif;
-            font-size: 1.1rem;
-            font-style: italic;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            letter-spacing: 0.05em;
+            width:100%;padding:14px;background:linear-gradient(to right,#F7CA18,#D4AF37);color:#000;
+            font-family:'Anton',sans-serif;font-size:1.1rem;font-style:italic;text-transform:uppercase;
+            border:none;border-radius:10px;cursor:pointer;letter-spacing:0.05em;
         }
-        #lock-msg { margin-top: 12px; color: #ff6b6b; font-size: 0.85rem; min-height: 18px; }
+        #lock-msg { margin-top:12px;color:#ff6b6b;font-size:0.85rem;min-height:18px; }
+        #main-content { display:none;width:100%; }
 
-        #main-content { display: none; width: 100%; }
-
-        @media (max-width: 600px) {
-            .stats-row { grid-template-columns: 1fr 1fr; }
-            .card-row { flex-wrap: wrap; }
-            .card-actions { width: 100%; justify-content: flex-start; }
+        @media(max-width:600px){
+            .stats-row{grid-template-columns:1fr 1fr;}
+            .card-row{flex-wrap:wrap;}
+            .card-actions{width:100%;justify-content:flex-start;}
+            .btn-toggle-grid{grid-template-columns:1fr;}
         }
     </style>
 </head>
 <body>
 
-<!-- Lock Screen -->
+<!-- Lock -->
 <div id="lock-screen">
     <div class="lock-icon"><i class="fa-solid fa-id-card"></i></div>
     <h1>Card Manager</h1>
     <p>Admin access only</p>
-    <input type="password" id="password" class="lock-input" placeholder="Enter password…" autocomplete="current-password">
+    <input type="password" id="password" class="lock-input" placeholder="Enter password…">
     <button class="lock-btn" onclick="unlock()">Unlock</button>
     <div id="lock-msg"></div>
 </div>
 
-<!-- Main Content (shown after unlock) -->
+<!-- Main -->
 <div id="main-content">
-
-    <!-- Sticky top bar -->
     <div class="top-bar">
         <div class="logo-title">
             <i class="fa-solid fa-id-card" style="color:#00A896;font-size:1.2rem;"></i>
@@ -394,24 +251,11 @@
     </div>
 
     <div class="manage-wrap">
-
-        <!-- Stats -->
         <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-num" id="stat-total">—</div>
-                <div class="stat-label">Total Cards</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num" id="stat-newest">—</div>
-                <div class="stat-label">Latest Card</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num" id="stat-buttons">—</div>
-                <div class="stat-label">Avg Buttons</div>
-            </div>
+            <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total Cards</div></div>
+            <div class="stat-card"><div class="stat-num" id="stat-newest">—</div><div class="stat-label">Latest Card</div></div>
+            <div class="stat-card"><div class="stat-num" id="stat-buttons">—</div><div class="stat-label">Avg Buttons</div></div>
         </div>
-
-        <!-- Controls -->
         <div class="controls-row">
             <input type="text" class="search-box" id="search-box" placeholder="🔍  Search by name or job title…" oninput="renderCards()">
             <select class="sort-select" id="sort-select" onchange="renderCards()">
@@ -421,50 +265,98 @@
                 <option value="name-desc">Name Z–A</option>
             </select>
         </div>
-
-        <!-- Card list -->
         <div id="cards-list">
             <div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading cards…</p></div>
         </div>
-
     </div>
 </div>
 
 <!-- QR Modal -->
-<div class="modal-overlay" id="qr-modal" onclick="closeQR(event)">
-    <div class="modal-box">
+<div class="modal-overlay" id="qr-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal-box qr-center">
         <h3 id="qr-name">QR Code</h3>
-        <img id="qr-img" src="" alt="QR Code" width="200" height="200">
+        <img id="qr-img" src="" alt="QR" width="200" height="200">
         <p id="qr-url"></p>
-        <button class="modal-close" onclick="document.getElementById('qr-modal').classList.remove('open')">Close</button>
+        <div class="modal-actions" style="justify-content:center;">
+            <button class="modal-cancel" onclick="document.getElementById('qr-modal').classList.remove('open')">Close</button>
+        </div>
     </div>
 </div>
 
-<!-- Delete Confirm Modal -->
-<div class="modal-overlay" id="del-modal" onclick="closeDelModal(event)">
+<!-- Edit Modal -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-box">
-        <h3>Delete Card?</h3>
-        <p>This will permanently remove <span class="del-name" id="del-name-label"></span>'s card. This cannot be undone.</p>
+        <h3>✏️ Edit Card</h3>
+
+        <div class="edit-group">
+            <label>Full Name *</label>
+            <input type="text" id="edit-name" placeholder="Full name">
+        </div>
+        <div class="edit-group">
+            <label>Job Title *</label>
+            <input type="text" id="edit-title" placeholder="Job title">
+        </div>
+        <div class="edit-group">
+            <label>Phone Number</label>
+            <input type="tel" id="edit-phone" placeholder="e.g. 07359 559614">
+        </div>
+        <div class="edit-group">
+            <label>Email Address</label>
+            <input type="email" id="edit-email" placeholder="e.g. name@beondrogue.co.uk">
+        </div>
+
+        <div class="edit-section-title"><i class="fa-solid fa-toggle-on" style="color:#F7CA18;margin-right:6px;"></i>Buttons to show</div>
+        <div class="btn-toggle-grid">
+            <div class="btn-toggle"><input type="checkbox" id="et-exchange"><i class="fa-solid fa-address-book"></i><label for="et-exchange">Send Details</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-call"><i class="fa-solid fa-phone"></i><label for="et-call">Call Me</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-email"><i class="fa-solid fa-envelope"></i><label for="et-email">Email Me</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-whatsapp"><i class="fa-brands fa-whatsapp"></i><label for="et-whatsapp">WhatsApp</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-website"><i class="fa-solid fa-globe"></i><label for="et-website">Website</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-instagram"><i class="fa-brands fa-instagram"></i><label for="et-instagram">Instagram</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-tiktok"><i class="fa-brands fa-tiktok"></i><label for="et-tiktok">TikTok</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-youtube"><i class="fa-brands fa-youtube"></i><label for="et-youtube">YouTube</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-facebook"><i class="fa-brands fa-facebook"></i><label for="et-facebook">Facebook</label></div>
+            <div class="btn-toggle"><input type="checkbox" id="et-linkedin"><i class="fa-brands fa-linkedin"></i><label for="et-linkedin">LinkedIn</label></div>
+        </div>
+
         <div class="modal-actions">
-            <button class="modal-close" onclick="document.getElementById('del-modal').classList.remove('open')">Cancel</button>
+            <button class="modal-cancel" onclick="document.getElementById('edit-modal').classList.remove('open')">Cancel</button>
+            <button class="modal-save" id="edit-save-btn" onclick="saveEdit()">Save Changes</button>
+        </div>
+        <div class="modal-status" id="edit-status"></div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal-overlay" id="del-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal-box" style="max-width:380px;">
+        <h3>🗑️ Delete Card?</h3>
+        <p style="color:rgba(244,244,249,0.75);font-size:0.9rem;">
+            Permanently remove <span style="color:#F7CA18;font-weight:700;" id="del-name-label"></span>'s card?
+            <br><small style="color:rgba(244,244,249,0.45);">This cannot be undone.</small>
+        </p>
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="document.getElementById('del-modal').classList.remove('open')">Cancel</button>
             <button class="modal-del-btn" id="confirm-del-btn">Delete</button>
         </div>
-        <div id="del-status" style="margin-top:12px;font-size:0.85rem;min-height:18px;"></div>
+        <div class="modal-status" id="del-status"></div>
     </div>
 </div>
 
 <div class="footer" style="margin-top:0;">Beond Rogue Card Manager — Admin Only</div>
 
 <script>
-    const PASS     = 'johnbeon';
-    const PROFILES = 'BeondRogue/beond-rogue-ebusiness-card-profiles';
-    const BASE_URL = 'https://beondrogue.github.io/beond-rogue-ebusiness-card-profiles/';
-    const TOKEN    = ['ghp_ZoFzjanpY9uJg','jN3C4jHU4IoXMUrz','b3VFLA0'].join('');
-    const API      = 'https://api.github.com';
+    const PASS       = 'johnbeon';
+    const PROFILES   = 'BeondRogue/beond-rogue-ebusiness-card-profiles';
+    const PROFILES_URL = 'https://beondrogue.github.io/beond-rogue-ebusiness-card-profiles/';
+    const DISPATCH_REPO = 'BeondRogue/beond-rogue-cards';
+    const TOKEN      = ['ghp_ZoFzjanpY9uJg','jN3C4jHU4IoXMUrz','b3VFLA0'].join('');
+    const API        = 'https://api.github.com';
 
-    let allCards = [];
+    let allCards     = [];
+    let editingSlug  = null;  // slug of card currently being edited
 
-    /* ─── Auth ─── */
+    /* ── Auth ── */
     function unlock() {
         if (document.getElementById('password').value === PASS) {
             document.getElementById('lock-screen').style.display = 'none';
@@ -474,97 +366,104 @@
             document.getElementById('lock-msg').textContent = '❌ Incorrect password.';
         }
     }
-    document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+    document.getElementById('password').addEventListener('keydown', e => { if (e.key==='Enter') unlock(); });
 
-    /* ─── Load index ─── */
+    /* ── Load index ── */
     async function loadCards() {
         document.getElementById('cards-list').innerHTML =
             '<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading cards…</p></div>';
         try {
-            const res = await fetch(
-                `${API}/repos/${PROFILES}/contents/cards-index.json`,
-                { headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json' } }
-            );
-            if (res.status === 404) {
-                allCards = [];
-            } else {
+            const res = await fetch(`${API}/repos/${PROFILES}/contents/cards-index.json`,
+                { headers:{ Authorization:`token ${TOKEN}`, Accept:'application/vnd.github+json' } });
+            if (res.status === 404) { allCards = []; }
+            else {
                 const data = await res.json();
-                allCards = JSON.parse(atob(data.content.replace(/\n/g, '')));
+                allCards = JSON.parse(atob(data.content.replace(/\n/g,'')));
             }
             updateStats();
             renderCards();
-        } catch (e) {
+        } catch(e) {
             document.getElementById('cards-list').innerHTML =
-                `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Failed to load cards: ${e.message}</p></div>`;
+                `<div class="empty-state"><i class="fa-solid fa-triangle-exclamation"></i><p>Failed to load: ${e.message}</p></div>`;
         }
     }
 
-    /* ─── Stats ─── */
+    /* ── Helpers ── */
+    function cardUrl(card) {
+        // Use stored url if present, otherwise build from slug in profiles repo
+        return card.url || `${PROFILES_URL}${card.slug}.html`;
+    }
+
+    /* ── Stats ── */
     function updateStats() {
         document.getElementById('stat-total').textContent = allCards.length;
-        if (allCards.length === 0) {
+        if (!allCards.length) {
             document.getElementById('stat-newest').textContent = '—';
             document.getElementById('stat-buttons').textContent = '—';
             return;
         }
-        const sorted = [...allCards].sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-        const newest = sorted[0].name.split(' ')[0];
-        document.getElementById('stat-newest').textContent = newest;
-        const avg = Math.round(allCards.reduce((s,c) => s + (c.buttons ? c.buttons.split(',').length : 0), 0) / allCards.length);
+        const sorted = [...allCards].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+        document.getElementById('stat-newest').textContent = sorted[0].name.split(' ')[0];
+        const avg = Math.round(allCards.reduce((s,c)=>s+(c.buttons?c.buttons.split(',').length:0),0)/allCards.length);
         document.getElementById('stat-buttons').textContent = avg;
     }
 
-    /* ─── Render list ─── */
+    /* ── Render ── */
     function renderCards() {
         const q   = document.getElementById('search-box').value.toLowerCase();
         const srt = document.getElementById('sort-select').value;
-
         let filtered = allCards.filter(c =>
             c.name.toLowerCase().includes(q) || c.title.toLowerCase().includes(q)
         );
-
-        filtered.sort((a,b) => {
-            if (srt === 'date-desc') return new Date(b.created_at) - new Date(a.created_at);
-            if (srt === 'date-asc')  return new Date(a.created_at) - new Date(b.created_at);
-            if (srt === 'name-asc')  return a.name.localeCompare(b.name);
-            if (srt === 'name-desc') return b.name.localeCompare(a.name);
+        filtered.sort((a,b)=>{
+            if (srt==='date-desc') return new Date(b.created_at)-new Date(a.created_at);
+            if (srt==='date-asc')  return new Date(a.created_at)-new Date(b.created_at);
+            if (srt==='name-asc')  return a.name.localeCompare(b.name);
+            if (srt==='name-desc') return b.name.localeCompare(a.name);
         });
 
         const list = document.getElementById('cards-list');
-        if (filtered.length === 0) {
+        if (!filtered.length) {
             list.innerHTML = `<div class="empty-state">
                 <i class="fa-solid fa-users-slash"></i>
-                <p>${allCards.length === 0 ? 'No cards created yet. <a href="create.html" style="color:#F7CA18;">Create your first card →</a>' : 'No cards match your search.'}</p>
+                <p>${allCards.length===0
+                    ? 'No cards yet. <a href="create.html" style="color:#F7CA18;">Create your first →</a>'
+                    : 'No results for that search.'}</p>
             </div>`;
             return;
         }
 
         list.innerHTML = filtered.map(card => {
             const initials = card.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-            const cardUrl  = `${BASE_URL}${card.slug}.html`;
-            const created  = card.created_at ? new Date(card.created_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : 'Unknown date';
+            const url      = cardUrl(card);
+            const created  = card.created_at
+                ? new Date(card.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
+                : 'Unknown date';
             const btnList  = card.buttons ? card.buttons.split(',').filter(Boolean) : [];
-            const badges   = btnList.map(b => `<span class="btn-badge">${b}</span>`).join('');
-            const contact  = [card.phone, card.email].filter(Boolean).join(' · ') || '';
+            const badges   = btnList.map(b=>`<span class="btn-badge">${b}</span>`).join('');
+            const contact  = [card.phone, card.email].filter(Boolean).join(' · ');
 
             return `<div class="card-row" id="row-${card.slug}">
                 <div class="card-avatar">${initials}</div>
                 <div class="card-info">
                     <div class="card-name">${card.name}</div>
                     <div class="card-title-text">${card.title}</div>
-                    ${contact ? `<div class="card-meta">${contact}</div>` : ''}
+                    ${contact ? `<div class="card-meta"><i class="fa-solid fa-circle-info" style="color:#00A896;margin-right:4px;font-size:0.65rem;"></i>${contact}</div>` : ''}
                     <div class="card-meta">Created ${created}</div>
                     <div class="btn-badges">${badges}</div>
                 </div>
                 <div class="card-actions">
-                    <a class="action-btn" href="${cardUrl}" target="_blank" title="Preview card">
+                    <a class="action-btn" href="${url}" target="_blank" title="View live card">
                         <i class="fa-solid fa-eye"></i>
                     </a>
-                    <button class="action-btn" onclick="copyLink('${cardUrl}', this)" title="Copy card link">
+                    <button class="action-btn" onclick="copyLink('${url}',this)" title="Copy card link">
                         <i class="fa-solid fa-link"></i>
                     </button>
-                    <button class="action-btn" onclick="showQR('${card.name}','${cardUrl}')" title="Show QR code">
+                    <button class="action-btn" onclick="showQR('${card.name}','${url}')" title="Show QR code">
                         <i class="fa-solid fa-qrcode"></i>
+                    </button>
+                    <button class="action-btn edit-btn" onclick="openEdit('${card.slug}')" title="Edit card">
+                        <i class="fa-solid fa-pen"></i>
                     </button>
                     <button class="action-btn danger" onclick="confirmDelete('${card.slug}','${card.name}')" title="Delete card">
                         <i class="fa-solid fa-trash"></i>
@@ -574,32 +473,121 @@
         }).join('');
     }
 
-    /* ─── Copy link ─── */
+    /* ── Copy link ── */
     function copyLink(url, btn) {
         navigator.clipboard.writeText(url).then(() => {
             btn.classList.add('copy-done');
             btn.innerHTML = '<i class="fa-solid fa-check"></i>';
-            setTimeout(() => {
-                btn.classList.remove('copy-done');
-                btn.innerHTML = '<i class="fa-solid fa-link"></i>';
-            }, 2000);
+            setTimeout(() => { btn.classList.remove('copy-done'); btn.innerHTML='<i class="fa-solid fa-link"></i>'; }, 2000);
         });
     }
 
-    /* ─── QR Code ─── */
+    /* ── QR ── */
     function showQR(name, url) {
         document.getElementById('qr-name').textContent = name;
         document.getElementById('qr-url').textContent  = url;
-        const encoded = encodeURIComponent(url);
-        document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}&color=00A896&bgcolor=110524`;
+        document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}&color=00A896&bgcolor=110524`;
         document.getElementById('qr-modal').classList.add('open');
     }
-    function closeQR(e) {
-        if (e.target === document.getElementById('qr-modal'))
-            document.getElementById('qr-modal').classList.remove('open');
+
+    /* ── Edit ── */
+    function openEdit(slug) {
+        const card = allCards.find(c => c.slug === slug);
+        if (!card) return;
+        editingSlug = slug;
+
+        document.getElementById('edit-name').value  = card.name;
+        document.getElementById('edit-title').value = card.title;
+        document.getElementById('edit-phone').value = card.phone || '';
+        document.getElementById('edit-email').value = card.email || '';
+
+        const btns = (card.buttons || '').split(',');
+        ['exchange','call','email','whatsapp','website','instagram','tiktok','youtube','facebook','linkedin']
+            .forEach(b => { document.getElementById(`et-${b}`).checked = btns.includes(b); });
+
+        document.getElementById('edit-status').textContent = '';
+        document.getElementById('edit-save-btn').disabled = false;
+        document.getElementById('edit-save-btn').textContent = 'Save Changes';
+        document.getElementById('edit-modal').classList.add('open');
     }
 
-    /* ─── Delete ─── */
+    async function saveEdit() {
+        const name  = document.getElementById('edit-name').value.trim();
+        const title = document.getElementById('edit-title').value.trim();
+        if (!name || !title) {
+            document.getElementById('edit-status').style.color = '#ff6b6b';
+            document.getElementById('edit-status').textContent = '⚠️ Name and title are required.';
+            return;
+        }
+
+        const btnList = [];
+        ['exchange','call','email','whatsapp','website','instagram','tiktok','youtube','facebook','linkedin']
+            .forEach(b => { if (document.getElementById(`et-${b}`).checked) btnList.push(b); });
+
+        const saveBtn = document.getElementById('edit-save-btn');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving…';
+        document.getElementById('edit-status').textContent = '';
+
+        try {
+            const res = await fetch(`${API}/repos/${DISPATCH_REPO}/dispatches`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/vnd.github+json',
+                    Authorization: `token ${TOKEN}`,
+                    'Content-Type': 'application/json',
+                    'X-GitHub-Api-Version': '2022-11-28'
+                },
+                body: JSON.stringify({
+                    event_type: 'update-card',
+                    client_payload: {
+                        name,
+                        title,
+                        phone:    document.getElementById('edit-phone').value.trim(),
+                        email:    document.getElementById('edit-email').value.trim(),
+                        buttons:  btnList.join(','),
+                        old_slug: editingSlug
+                    }
+                })
+            });
+
+            if (res.status === 204) {
+                // Optimistic local update
+                const newSlug = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+                const idx = allCards.findIndex(c => c.slug === editingSlug);
+                if (idx !== -1) {
+                    allCards[idx] = {
+                        ...allCards[idx],
+                        name, title,
+                        phone: document.getElementById('edit-phone').value.trim(),
+                        email: document.getElementById('edit-email').value.trim(),
+                        buttons: btnList.join(','),
+                        slug: newSlug,
+                        url: `${PROFILES_URL}${newSlug}.html`
+                    };
+                }
+                updateStats();
+                renderCards();
+
+                document.getElementById('edit-status').style.color = '#00A896';
+                document.getElementById('edit-status').innerHTML =
+                    `✅ Saved! Card will update at:<br>
+                     <a href="${PROFILES_URL}${newSlug}.html" target="_blank" style="color:#F7CA18;font-size:0.8rem;">
+                         ${PROFILES_URL}${newSlug}.html</a><br>
+                     <small style="color:rgba(244,244,249,0.5);">⏱️ Allow ~60 seconds for GitHub to publish it.</small>`;
+                saveBtn.textContent = 'Saved ✓';
+            } else {
+                throw new Error(`GitHub returned ${res.status}`);
+            }
+        } catch(e) {
+            document.getElementById('edit-status').style.color = '#ff6b6b';
+            document.getElementById('edit-status').textContent = `❌ ${e.message}`;
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Changes';
+        }
+    }
+
+    /* ── Delete ── */
     let pendingSlug = null;
 
     function confirmDelete(slug, name) {
@@ -616,72 +604,45 @@
         const slug = pendingSlug;
         const statusEl = document.getElementById('del-status');
         const btn = document.getElementById('confirm-del-btn');
-        btn.disabled = true;
-        btn.textContent = 'Deleting…';
-        statusEl.textContent = '';
+        btn.disabled = true; btn.textContent = 'Deleting…';
 
         try {
-            // 1. Get SHA of HTML file
-            const fileRes = await fetch(
-                `${API}/repos/${PROFILES}/contents/${slug}.html`,
-                { headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json' } }
-            );
-            if (!fileRes.ok) throw new Error('Card file not found.');
+            // Get file SHA
+            const fileRes = await fetch(`${API}/repos/${PROFILES}/contents/${slug}.html`,
+                { headers:{ Authorization:`token ${TOKEN}`, Accept:'application/vnd.github+json' } });
+            if (!fileRes.ok) throw new Error('Card file not found in profiles repo.');
             const fileData = await fileRes.json();
 
-            // 2. Delete the HTML file
-            const delRes = await fetch(
-                `${API}/repos/${PROFILES}/contents/${slug}.html`,
-                {
-                    method: 'DELETE',
-                    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: `Remove card: ${slug}`, sha: fileData.sha })
-                }
-            );
+            // Delete HTML file
+            const delRes = await fetch(`${API}/repos/${PROFILES}/contents/${slug}.html`, {
+                method:'DELETE',
+                headers:{ Authorization:`token ${TOKEN}`, Accept:'application/vnd.github+json','Content-Type':'application/json' },
+                body: JSON.stringify({ message:`Remove card: ${slug}`, sha: fileData.sha })
+            });
             if (!delRes.ok) throw new Error('Failed to delete card file.');
 
-            // 3. Update cards-index.json (remove this entry)
-            const idxRes = await fetch(
-                `${API}/repos/${PROFILES}/contents/cards-index.json`,
-                { headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json' } }
-            );
+            // Update index
+            const idxRes = await fetch(`${API}/repos/${PROFILES}/contents/cards-index.json`,
+                { headers:{ Authorization:`token ${TOKEN}`, Accept:'application/vnd.github+json' } });
             if (idxRes.ok) {
                 const idxData = await idxRes.json();
-                const index = JSON.parse(atob(idxData.content.replace(/\n/g,'')));
-                const updated = index.filter(c => c.slug !== slug);
-                await fetch(
-                    `${API}/repos/${PROFILES}/contents/cards-index.json`,
-                    {
-                        method: 'PUT',
-                        headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            message: `Remove card from index: ${slug}`,
-                            content: btoa(JSON.stringify(updated, null, 2)),
-                            sha: idxData.sha
-                        })
-                    }
-                );
+                const updated = JSON.parse(atob(idxData.content.replace(/\n/g,''))).filter(c=>c.slug!==slug);
+                await fetch(`${API}/repos/${PROFILES}/contents/cards-index.json`, {
+                    method:'PUT',
+                    headers:{ Authorization:`token ${TOKEN}`, Accept:'application/vnd.github+json','Content-Type':'application/json' },
+                    body: JSON.stringify({ message:`Remove from index: ${slug}`, content:btoa(JSON.stringify(updated,null,2)), sha:idxData.sha })
+                });
             }
 
-            // 4. Remove from local state and re-render
             allCards = allCards.filter(c => c.slug !== slug);
-            updateStats();
-            renderCards();
+            updateStats(); renderCards();
             document.getElementById('del-modal').classList.remove('open');
-
-        } catch (e) {
+        } catch(e) {
             statusEl.style.color = '#ff6b6b';
             statusEl.textContent = `❌ ${e.message}`;
-            btn.disabled = false;
-            btn.textContent = 'Try Again';
+            btn.disabled = false; btn.textContent = 'Try Again';
         }
     });
-
-    function closeDelModal(e) {
-        if (e.target === document.getElementById('del-modal'))
-            document.getElementById('del-modal').classList.remove('open');
-    }
 </script>
-
 </body>
 </html>

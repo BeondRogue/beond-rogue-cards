@@ -1,8 +1,8 @@
-name: Create E-Business Card
+name: Create / Update E-Business Card
 
 on:
   repository_dispatch:
-    types: [create-card]
+    types: [create-card, update-card]
 
 jobs:
   build-card:
@@ -18,11 +18,12 @@ jobs:
 
       - name: Generate card HTML and update index
         env:
-          NAME:    ${{ github.event.client_payload.name }}
-          TITLE:   ${{ github.event.client_payload.title }}
-          PHONE:   ${{ github.event.client_payload.phone }}
-          EMAIL:   ${{ github.event.client_payload.email }}
-          BUTTONS: ${{ github.event.client_payload.buttons }}
+          NAME:     ${{ github.event.client_payload.name }}
+          TITLE:    ${{ github.event.client_payload.title }}
+          PHONE:    ${{ github.event.client_payload.phone }}
+          EMAIL:    ${{ github.event.client_payload.email }}
+          BUTTONS:  ${{ github.event.client_payload.buttons }}
+          OLD_SLUG: ${{ github.event.client_payload.old_slug }}
         run: |
           python3 - <<'PYEOF'
           import os, re, json
@@ -33,9 +34,17 @@ jobs:
           phone   = os.environ.get('PHONE', '')
           email   = os.environ.get('EMAIL', '')
           buttons = os.environ.get('BUTTONS', '').split(',')
+          old_slug = os.environ.get('OLD_SLUG', '').strip()
 
           slug = re.sub(r'[^a-z0-9-]', '', name.lower().replace(' ', '-'))
           created_at = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+          # If slug changed, delete the old HTML file
+          if old_slug and old_slug != slug:
+              old_path = f'cards-repo/{old_slug}.html'
+              if os.path.exists(old_path):
+                  os.remove(old_path)
+                  print(f'Removed old card: {old_path}')
 
           def btn(key, href, icon, label, extra=''):
               if key in buttons:
@@ -131,6 +140,6 @@ jobs:
         run: |
           git config user.name  "Beond Rogue Card Bot"
           git config user.email "cards@beondrogue.co.uk"
-          git add "${SLUG}.html" cards-index.json
-          git commit -m "Add e-business card: ${CARDNAME}"
+          git add -A
+          git diff --cached --quiet || git commit -m "Update e-business card: ${CARDNAME}"
           git push
