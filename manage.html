@@ -390,8 +390,10 @@
 
     /* ── Helpers ── */
     function cardUrl(card) {
-        // Use stored url if present, otherwise build from slug in profiles repo
-        return card.url || `${PROFILES_URL}${card.slug}.html`;
+        if (card.url) return card.url;
+        if (card.slug === 'john-nock') return 'https://beondrogue.github.io/beond-rogue-cards/';
+        if (card.slug === 'fiona-slater') return 'https://beondrogue.github.io/beond-rogue-cards/fiona.html';
+        return `${PROFILES_URL}${card.slug}.html`;
     }
 
     /* ── Stats ── */
@@ -553,8 +555,13 @@
 
             if (res.status === 204) {
                 // Optimistic local update
-                const newSlug = name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+                const isPrimary = (editingSlug === 'john-nock' || editingSlug === 'fiona-slater');
+                const newSlug = isPrimary ? editingSlug : name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
                 const idx = allCards.findIndex(c => c.slug === editingSlug);
+                let updatedUrl = `${PROFILES_URL}${newSlug}.html`;
+                if (editingSlug === 'john-nock') updatedUrl = 'https://beondrogue.github.io/beond-rogue-cards/';
+                if (editingSlug === 'fiona-slater') updatedUrl = 'https://beondrogue.github.io/beond-rogue-cards/fiona.html';
+
                 if (idx !== -1) {
                     allCards[idx] = {
                         ...allCards[idx],
@@ -563,7 +570,7 @@
                         email: document.getElementById('edit-email').value.trim(),
                         buttons: btnList.join(','),
                         slug: newSlug,
-                        url: `${PROFILES_URL}${newSlug}.html`
+                        url: updatedUrl
                     };
                 }
                 updateStats();
@@ -572,8 +579,8 @@
                 document.getElementById('edit-status').style.color = '#00A896';
                 document.getElementById('edit-status').innerHTML =
                     `✅ Saved! Card will update at:<br>
-                     <a href="${PROFILES_URL}${newSlug}.html" target="_blank" style="color:#F7CA18;font-size:0.8rem;">
-                         ${PROFILES_URL}${newSlug}.html</a><br>
+                     <a href="${updatedUrl}" target="_blank" style="color:#F7CA18;font-size:0.8rem;">
+                         ${updatedUrl}</a><br>
                      <small style="color:rgba(244,244,249,0.5);">⏱️ Allow ~60 seconds for GitHub to publish it.</small>`;
                 saveBtn.textContent = 'Saved ✓';
             } else {

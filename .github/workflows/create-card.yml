@@ -9,7 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout cards repo
+      - name: Checkout main cards repo (for index.html / fiona.html updates if needed)
+        uses: actions/checkout@v4
+        with:
+          repository: BeondRogue/beond-rogue-cards
+          token: ${{ secrets.PAT }}
+          path: main-repo
+
+      - name: Checkout profile cards repo
         uses: actions/checkout@v4
         with:
           repository: BeondRogue/beond-rogue-ebusiness-card-profiles
@@ -29,18 +36,22 @@ jobs:
           import os, re, json
           from datetime import datetime, timezone
 
-          name    = os.environ.get('NAME', '')
-          title   = os.environ.get('TITLE', '')
-          phone   = os.environ.get('PHONE', '')
-          email   = os.environ.get('EMAIL', '')
-          buttons = os.environ.get('BUTTONS', '').split(',')
+          name     = os.environ.get('NAME', '')
+          title    = os.environ.get('TITLE', '')
+          phone    = os.environ.get('PHONE', '')
+          email    = os.environ.get('EMAIL', '')
+          buttons  = os.environ.get('BUTTONS', '').split(',')
           old_slug = os.environ.get('OLD_SLUG', '').strip()
 
           slug = re.sub(r'[^a-z0-9-]', '', name.lower().replace(' ', '-'))
           created_at = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 
-          # If slug changed, delete the old HTML file
-          if old_slug and old_slug != slug:
+          # Check if this is a primary card (John or Fiona)
+          is_john  = (old_slug == 'john-nock' or slug == 'john-nock')
+          is_fiona = (old_slug == 'fiona-slater' or slug == 'fiona-slater')
+
+          # If slug changed for a profile card, delete the old HTML file
+          if old_slug and old_slug != slug and not is_john and not is_fiona:
               old_path = f'cards-repo/{old_slug}.html'
               if os.path.exists(old_path):
                   os.remove(old_path)
@@ -49,7 +60,7 @@ jobs:
           def btn(key, href, icon, label, extra=''):
               if key in buttons:
                   cls = f'btn {extra}' if extra else 'btn'
-                  return f'<a href="{href}" target="_blank" class="{cls}"><i class="{icon}"></i> {label}</a>\n'
+                  return f'            <a href="{href}" target="_blank" class="{cls}"><i class="{icon}"></i> {label}</a>\n'
               return ''
 
           wa_num = re.sub(r'^0', '44', phone).replace(' ', '')
@@ -70,6 +81,9 @@ jobs:
           links += btn('facebook',  'https://www.facebook.com/share/19MkQ8F6VM/', 'fa-brands fa-facebook', 'Facebook')
           links += btn('linkedin',  'https://www.linkedin.com/in/beond-rogue-1ab925438', 'fa-brands fa-linkedin', 'LinkedIn')
 
+          # Strip trailing newline from links block
+          links = links.rstrip('\n')
+
           html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,21 +102,43 @@ jobs:
             <h2 class="title">{title}</h2>
         </div>
         <div class="links-section">
-{links}        </div>
+{links}
+        </div>
     </div>
     <div class="footer">
-        Not affiliated with Nintendo, Pokemon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
+        Not affiliated with Nintendo, Pokémon Company, Creatures, GAME FREAK, Wizards of the Coast, or Konami.
     </div>
     <script src="assets/js/main.js"></script>
 </body>
 </html>"""
 
-          # Write HTML card
-          filepath = f'cards-repo/{slug}.html'
-          with open(filepath, 'w') as f:
-              f.write(html)
+          card_url = ""
 
-          # Update cards-index.json
+          if is_john:
+              # Update index.html in main-repo
+              filepath = 'main-repo/index.html'
+              card_url = 'https://beondrogue.github.io/beond-rogue-cards/'
+              with open(filepath, 'w') as f:
+                  f.write(html)
+              print(f'Updated main John card: {filepath}')
+
+          elif is_fiona:
+              # Update fiona.html in main-repo
+              filepath = 'main-repo/fiona.html'
+              card_url = 'https://beondrogue.github.io/beond-rogue-cards/fiona.html'
+              with open(filepath, 'w') as f:
+                  f.write(html)
+              print(f'Updated main Fiona card: {filepath}')
+
+          else:
+              # Profile card in cards-repo
+              filepath = f'cards-repo/{slug}.html'
+              card_url = f'https://beondrogue.github.io/beond-rogue-ebusiness-card-profiles/{slug}.html'
+              with open(filepath, 'w') as f:
+                  f.write(html)
+              print(f'Written profile card: {filepath}')
+
+          # Update cards-index.json in cards-repo
           index_path = 'cards-repo/cards-index.json'
           if os.path.exists(index_path):
               with open(index_path) as f:
@@ -110,36 +146,48 @@ jobs:
           else:
               index = []
 
-          # Remove any existing entry with same slug (prevents duplicates)
-          index = [c for c in index if c.get('slug') != slug]
+          # Remove existing entry for old_slug or current slug
+          target_slug = old_slug if old_slug else slug
+          index = [c for c in index if c.get('slug') != target_slug and c.get('slug') != slug]
 
           index.append({
               'name': name,
               'title': title,
-              'slug': slug,
+              'slug': slug if not (is_john or is_fiona) else target_slug,
               'phone': phone,
               'email': email,
               'buttons': os.environ.get('BUTTONS', ''),
-              'created_at': created_at
+              'created_at': created_at,
+              'url': card_url
           })
 
           with open(index_path, 'w') as f:
               json.dump(index, f, indent=2)
 
-          # Export vars for next step
+          # Export vars for next steps
           with open(os.environ['GITHUB_ENV'], 'a') as f:
               f.write(f'SLUG={slug}\n')
               f.write(f'CARDNAME={name}\n')
+              f.write(f'IS_PRIMARY={"true" if (is_john or is_fiona) else "false"}\n')
 
-          print(f'Written: {filepath}')
-          print(f'Index now has {len(index)} card(s)')
+          print(f'Index updated successfully with {len(index)} card(s)')
           PYEOF
 
-      - name: Commit and push card
+      - name: Commit and push profile cards repo
         working-directory: cards-repo
         run: |
           git config user.name  "Beond Rogue Card Bot"
           git config user.email "cards@beondrogue.co.uk"
           git add -A
           git diff --cached --quiet || git commit -m "Update e-business card: ${CARDNAME}"
+          git push
+
+      - name: Commit and push main cards repo (if John or Fiona updated)
+        if: env.IS_PRIMARY == 'true'
+        working-directory: main-repo
+        run: |
+          git config user.name  "Beond Rogue Card Bot"
+          git config user.email "cards@beondrogue.co.uk"
+          git add index.html fiona.html
+          git diff --cached --quiet || git commit -m "Update primary card HTML: ${CARDNAME}"
           git push
